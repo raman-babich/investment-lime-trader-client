@@ -67,14 +67,18 @@ import java.util.Set;
  */
 class ClientOverviewApplication {
 
-  private final LimeTraderClient client = new LimeTraderClient(new Credentials(
-      "<your-client-id>",
-      "<your-client-secret>",
-      "<your-username>",
-      "<your-password>"));
+  private final LimeTraderClient client;
+
+  public ClientOverviewApplication(Credentials credentials) {
+    this.client = new LimeTraderClient(credentials);
+  }
 
   public static void main(String[] args) throws Exception {
-    ClientOverviewApplication application = new ClientOverviewApplication();
+    ClientOverviewApplication application = new ClientOverviewApplication(new Credentials(
+        "<your-client-id>",
+        "<your-client-secret>",
+        "<your-username>",
+        "<your-password>"));
     application.reviewAccountApi();
     application.reviewOrderApi();
     application.reviewPricingApi();

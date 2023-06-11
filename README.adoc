@@ -1,0 +1,75 @@
+= Lime trader client [COMING SOON]
+
+This is Java client for the https://lime.co/[lime.co] trader api. Official description of
+the api could be found https://docs.lime.co/trader/[here].
+
+== Quick start
+
+IMPORTANT: Java 11+ is required
+
+Add dependency of lime trader client, e.g. if you are using maven it will be something like:
+
+[source,xml]
+----
+<dependency>
+  <groupId>com.github.ramanbabich.lime</groupId>
+  <artifactId>lime-trader-client</artifactId>
+  <version>${lime-trader-client.version}</version>
+</dependency>
+----
+
+Create an instance of lime trader client specifying your credentials and just invoke methods you
+need. Don't forget to close client when you don't need it any longer to free up borrowed
+resources.
+
+[source,java]
+----
+LimeTraderClient client = new LimeTraderClient(new Credentials(
+      "<your-client-id>",
+      "<your-client-secret>",
+      "<your-username>",
+      "<your-password>"));
+List<AccountBalance> accountBalances = client.getAccountBalances();
+String accountNumber = accountBalances.get(0).accountNumber();
+client.setSubscriber((AccountBalanceChangedEventSubscriber) System.out::println);
+client.subscribeForAccountBalanceChangedEvents(accountNumber);
+Thread.sleep(5 * 1000);
+client.close();
+----
+
+Look through https://github.com/raman-babich/lime-trader-client/blob/main/src/test/java/com/github/ramanbabich/lime/limetraderclient/ClientOverviewApplication.java[
+one file code of the client overview app] to quickly get info about all capabilities of this client.
+You can also start this app inside your code and analyse capabilities via logs with help of
+code below:
+
+WARNING: `+application.reviewOrderApi();+` is commented because it makes the order that
+you possibly don't want to do, it is recommended to look through the
+https://github.com/raman-babich/lime-trader-client/blob/main/src/test/java/com/github/ramanbabich/lime/limetraderclient/ClientOverviewApplication.java[
+source code] first of all.
+
+[source,java]
+----
+ClientOverviewApplication application = new ClientOverviewApplication(new Credentials(
+        "<your-client-id>",
+        "<your-client-secret>",
+        "<your-username>",
+        "<your-password>"));
+application.reviewAccountApi();
+//application.reviewOrderApi();
+application.reviewPricingApi();
+application.reviewSecurityApi();
+application.reviewMarketDataApi();
+application.close();
+----
+
+== Internals
+
+This client internally uses
+https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpClient.html[
+`+java.net.http.HttpClient+`] introduced in Java 11 for http and web socket communication.
+https://github.com/FasterXML/jackson-databind[Shaded FasterXML Jackson databind] for
+(de)serialization of request/responses.
+
+== License
+
+Licensed under the Apache License, Version 2.0
