@@ -5,7 +5,7 @@ the api could be found https://docs.lime.co/trader/[here].
 
 == Quick start
 
-IMPORTANT: Java 11+ is required
+IMPORTANT: Java 17+ is required
 
 Add dependency of lime trader client, e.g. if you are using maven it will be something like:
 
