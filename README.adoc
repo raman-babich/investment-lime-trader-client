@@ -12,7 +12,7 @@ Add dependency of lime trader client, e.g. if you are using maven it will be som
 [source,xml]
 ----
 <dependency>
-  <groupId>com.github.ramanbabich.lime</groupId>
+  <groupId>com.ramanbabich.investment</groupId>
   <artifactId>lime-trader-client</artifactId>
   <version>${lime-trader-client.version}</version>
 </dependency>
@@ -37,14 +37,14 @@ Thread.sleep(5 * 1000);
 client.close();
 ----
 
-Look through https://github.com/raman-babich/lime-trader-client/blob/main/src/test/java/com/github/ramanbabich/lime/limetraderclient/ClientOverviewApplication.java[
+Look through https://github.com/raman-babich/investment-lime-trader-client/blob/main/src/test/java/com/ramanbabich/investment/limetraderclient/ClientOverviewApplication.java[
 one file code of the client overview app] to quickly get info about all capabilities of this client.
 You can also start this app inside your code and analyse capabilities via logs with help of
 code below:
 
 WARNING: `+application.reviewOrderApi();+` is commented because it makes the order that
 you possibly don't want to do, it is recommended to look through the
-https://github.com/raman-babich/lime-trader-client/blob/main/src/test/java/com/github/ramanbabich/lime/limetraderclient/ClientOverviewApplication.java[
+https://github.com/raman-babich/investment-lime-trader-client/blob/main/src/test/java/com/ramanbabich/investment/limetraderclient/ClientOverviewApplication.java[
 source code] first of all.
 
 [source,java]
@@ -73,3 +73,7 @@ https://github.com/FasterXML/jackson-databind[Shaded FasterXML Jackson databind]
 == License
 
 Licensed under the Apache License, Version 2.0
+
+Lime trader client includes a number of subcomponents with separate copyright notices and license
+terms. Your use of the source code for these subcomponents is subject to the terms and conditions
+of their licenses. Details is included within NOTICE.txt file, please read it before use.
