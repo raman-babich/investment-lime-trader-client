@@ -13,52 +13,70 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-========================================================================
+===============================================================================
 
-Lime trader client ${project.version} includes a number of subcomponents
-with separate copyright notices and license terms. Your use of the
-source code for these subcomponents is subject to the terms and
-conditions of their licenses. All subcomponents and description of
-modifications applied to them are listed below.
+Lime trader client ${project.version} includes a number of subcomponents with
+separate copyright notices and license terms. Your use of the source code for
+these subcomponents is subject to the terms and conditions of their licenses.
+All subcomponents and description of modifications applied to them are listed
+below.
 
 - com.fasterxml.jackson.core:jackson-anotations:${jackson.version}
   <https://github.com/FasterXML/jackson-annotations>
-  Repackaged
-  from 'com.fasterxml.jackson'
-  to 'com.github.ramanbabich.lime.limetraderclient.common.jackson'
+  Copyright 2007-, Tatu Saloranta (tatu.saloranta@iki.fi)
+  The Apache Software License, Version 2.0
+  Repackaged from 'com.fasterxml.jackson'
+  to 'com.ramanbabich.investment.limetraderclient.common.jackson'
 
 - com.fasterxml.jackson.core:jackson-core:${jackson.version}
   <https://github.com/FasterXML/jackson-core>
-  Repackaged
-  from 'com.fasterxml.jackson'
-  to 'com.github.ramanbabich.lime.limetraderclient.common.jackson'
+  Copyright 2007-, Tatu Saloranta (tatu.saloranta@iki.fi)
+  Apache License, Version 2.0
+  Subcomponents:
+   - fast-double-parser
+     Copyright (c) 2023 Werner Randelshofer, Switzerland.
+     MIT License
+     Subcomponents:
+      - fast-double-parser
+        Copyright (c) 2022 Daniel Lemire.
+        BSL License.
+      - fast-float
+        Copyright (c) 2021 The fast_float authors.
+        MIT License.
+      - bigint
+        Copyright (c) 2020 Tim Buktu.
+        2-clause BSD License.
+  Repackaged from 'com.fasterxml.jackson'
+  to 'com.ramanbabich.investment.limetraderclient.common.jackson'
 
 - com.fasterxml.jackson.core:jackson-databind:${jackson.version}
   <https://github.com/FasterXML/jackson-databind>
-  Repackaged
-  from 'com.fasterxml.jackson'
-  to 'com.github.ramanbabich.lime.limetraderclient.common.jackson'
+  Copyright 2007-, Tatu Saloranta (tatu.saloranta@iki.fi)
+  Apache License, Version 2.0
+  Repackaged from 'com.fasterxml.jackson'
+  to 'com.ramanbabich.investment.limetraderclient.common.jackson'
 
 - com.fasterxml.jackson.datatype:jackson-datatype-jdk8:${jackson.version}
   <https://github.com/FasterXML/jackson-modules-java8>
-  Repackaged
-  from 'com.fasterxml.jackson'
-  to 'com.github.ramanbabich.lime.limetraderclient.common.jackson'
+  Copyright 2013 FasterXML.com
+  Apache License, Version 2.0
+  Repackaged from 'com.fasterxml.jackson'
+  to 'com.ramanbabich.investment.limetraderclient.common.jackson'
 
-- com.fasterxml.jackson.datatype:jackson-datatype-jsr310:
-    ${jackson.version}
+- com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jackson.version}
   <https://github.com/FasterXML/jackson-modules-java8>
-  Repackaged
-  from 'com.fasterxml.jackson'
-  to 'com.github.ramanbabich.lime.limetraderclient.common.jackson'
+  Copyright 2013 FasterXML.com
+  Apache License, Version 2.0
+  Repackaged from 'com.fasterxml.jackson'
+  to 'com.ramanbabich.investment.limetraderclient.common.jackson'
 
-- com.fasterxml.jackson.module:jackson-module-parameter-names:
-    ${jackson.version}
+- com.fasterxml.jackson.module:jackson-module-parameter-names:${jackson.version}
   <https://github.com/FasterXML/jackson-modules-java8>
-  Repackaged
-  from 'com.fasterxml.jackson'
-  to 'com.github.ramanbabich.lime.limetraderclient.common.jackson'
+  Copyright 2013 FasterXML.com
+  Apache License, Version 2.0
+  Repackaged from 'com.fasterxml.jackson'
+  to 'com.ramanbabich.investment.limetraderclient.common.jackson'
 
-License and copyright notice files for subcomponents listed above
-and their transitive subcomponents is included into distribution of
-the lime trader client.
+License and copyright notice files for subcomponents listed above and their
+subcomponents could be found in the subcomponent-licenses directory of the
+source form of the lime trader client.
