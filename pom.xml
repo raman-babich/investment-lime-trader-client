@@ -175,8 +175,6 @@ limitations under the License.]]></inlineHeader>
                 <exclude>LICENSE.txt</exclude>
                 <exclude>subcomponent-licenses/**</exclude>
                 <exclude>checkstyle.xml</exclude>
-                <exclude>src/test/resources/**</exclude>
-                <exclude>src/main/resources/**</exclude>
                 <exclude>target/**</exclude>
               </excludes>
             </licenseSet>
