@@ -248,8 +248,6 @@ limitations under the License.]]></inlineHeader>
         <configuration>
           <releaseProfiles>release</releaseProfiles>
           <tagNameFormat>v@{project.version}</tagNameFormat>
-          <autoVersionSubmodules>true</autoVersionSubmodules>
-          <preparationGoals>clean install</preparationGoals>
           <scmDevelopmentCommitComment>build: prepare for next development iteration</scmDevelopmentCommitComment>
           <scmReleaseCommitComment>build: prepare release @{releaseLabel}</scmReleaseCommitComment>
         </configuration>
