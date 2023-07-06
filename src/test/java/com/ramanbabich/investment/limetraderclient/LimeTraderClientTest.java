@@ -45,6 +45,7 @@ import com.ramanbabich.investment.limetraderclient.auth.model.Authentication;
 import com.ramanbabich.investment.limetraderclient.auth.model.Credentials;
 import com.ramanbabich.investment.limetraderclient.common.model.ClientConfig;
 import com.ramanbabich.investment.limetraderclient.common.model.IllegalLimeTraderClientStateException;
+import com.ramanbabich.investment.limetraderclient.common.model.NotFoundException;
 import com.ramanbabich.investment.limetraderclient.common.websocket.ResilientWebSocket;
 import com.ramanbabich.investment.limetraderclient.marketdata.MarketDataErrorEventSubscriber;
 import com.ramanbabich.investment.limetraderclient.marketdata.MarketDataSubscriptionActionFactory;
@@ -560,6 +561,30 @@ class LimeTraderClientTest {
 
   @Test
   @SuppressWarnings("unchecked")
+  void shouldThrowNotFoundExceptionOnGetOrder() throws Exception {
+    ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
+    Authentication auth = mockSuccessfulAuth(clientWithMocks);
+    String orderId = "orderId";
+    URI uri = URI.create(String.format(
+        orderUrlPattern,
+        URLEncoder.encode(orderId, StandardCharsets.UTF_8)));
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(uri)
+        .header("accept", "application/json")
+        .header(AUTHORIZATION_HEADER, AUTHORIZATION_PREFIX + auth.accessToken())
+        .GET()
+        .build();
+    HttpResponse<String> response = (HttpResponse<String>) Mockito.mock(HttpResponse.class);
+    Mockito.when(clientWithMocks.httpClient.send(request, BodyHandlers.ofString()))
+        .thenReturn(response);
+    Mockito.when(response.statusCode()).thenReturn(404);
+
+    Assertions.assertThrows(NotFoundException.class,
+        () -> clientWithMocks.client.getOrder(orderId));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
   void shouldCancelOrder() throws Exception {
     ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
     Authentication auth = mockSuccessfulAuth(clientWithMocks);
@@ -590,6 +615,34 @@ class LimeTraderClientTest {
         .thenReturn(expected);
 
     Assertions.assertEquals(expected, clientWithMocks.client.cancelOrder(orderId, info));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void shouldThrowNotFoundExceptionOnCancelOrder() throws Exception {
+    ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
+    Authentication auth = mockSuccessfulAuth(clientWithMocks);
+    String orderId = "orderId";
+    OrderCancellationInfo info = new OrderCancellationInfo("message");
+    String requestBody = "requestBody";
+    Mockito.when(clientWithMocks.jsonMapper.writeValueAsString(info)).thenReturn(requestBody);
+    URI uri = URI.create(String.format(
+        cancelOrderUrlPattern,
+        URLEncoder.encode(orderId, StandardCharsets.UTF_8)));
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(uri)
+        .header("accept", "application/json")
+        .header("content-type", "application/json")
+        .header(AUTHORIZATION_HEADER, AUTHORIZATION_PREFIX + auth.accessToken())
+        .POST(BodyPublishers.ofString(requestBody))
+        .build();
+    HttpResponse<String> response = (HttpResponse<String>) Mockito.mock(HttpResponse.class);
+    Mockito.when(clientWithMocks.httpClient.send(request, BodyHandlers.ofString()))
+        .thenReturn(response);
+    Mockito.when(response.statusCode()).thenReturn(404);
+
+    Assertions.assertThrows(NotFoundException.class,
+        () -> clientWithMocks.client.cancelOrder(orderId, info));
   }
 
   @Test
@@ -682,6 +735,28 @@ class LimeTraderClientTest {
         BigDecimal.ONE,
         BigDecimal.ONE,
         BigDecimal.ONE);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void shouldThrowNotFoundExceptionOnGetQuote() throws Exception {
+    ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
+    Authentication auth = mockSuccessfulAuth(clientWithMocks);
+    String symbol = "symbol";
+    URI uri = buildUri(quoteUrl, Map.of("symbol", symbol));
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(uri)
+        .header("accept", "application/json")
+        .header(AUTHORIZATION_HEADER, AUTHORIZATION_PREFIX + auth.accessToken())
+        .GET()
+        .build();
+    HttpResponse<String> response = (HttpResponse<String>) Mockito.mock(HttpResponse.class);
+    Mockito.when(clientWithMocks.httpClient.send(request, BodyHandlers.ofString()))
+        .thenReturn(response);
+    Mockito.when(response.statusCode()).thenReturn(404);
+
+    Assertions.assertThrows(NotFoundException.class,
+        () -> clientWithMocks.client.getQuote(symbol));
   }
 
   @Test
