@@ -46,6 +46,7 @@ import com.ramanbabich.investment.limetraderclient.common.model.ClientConfig;
 import com.ramanbabich.investment.limetraderclient.common.model.IllegalLimeTraderClientStateException;
 import com.ramanbabich.investment.limetraderclient.common.model.InvalidCredentialsException;
 import com.ramanbabich.investment.limetraderclient.common.model.InvalidInputException;
+import com.ramanbabich.investment.limetraderclient.common.model.NotFoundException;
 import com.ramanbabich.investment.limetraderclient.common.model.OrderType;
 import com.ramanbabich.investment.limetraderclient.common.model.UnexpectedFailureException;
 import com.ramanbabich.investment.limetraderclient.common.websocket.IllegalResilientWebSocketStateException;
@@ -706,6 +707,9 @@ public class LimeTraderClient implements AutoCloseable {
     if (response.statusCode() / 100 == 2) {
       return jsonMapper.readValue(response.body(), Order.class);
     } else if (response.statusCode() / 100 == 4) {
+      if (response.statusCode() == 404) {
+        throw new NotFoundException(String.format("The order '%s' is not found.", id));
+      }
       throw new InvalidInputException(String.format(
           "Can't get the order '%s' because of '%s' input error with status '%d'.",
           id, response.body(), response.statusCode()));
@@ -751,6 +755,9 @@ public class LimeTraderClient implements AutoCloseable {
     if (response.statusCode() / 100 == 2) {
       return jsonMapper.readValue(response.body(), OrderCancellationResult.class);
     } else if (response.statusCode() / 100 == 4) {
+      if (response.statusCode() == 404) {
+        throw new NotFoundException(String.format("The order '%s' is not found.", id));
+      }
       throw new InvalidInputException(String.format(
           "Can't cancel the order '%s' because of '%s' input error with status '%d'.",
           id, response.body(), response.statusCode()));
@@ -838,6 +845,10 @@ public class LimeTraderClient implements AutoCloseable {
     if (response.statusCode() / 100 == 2) {
       return jsonMapper.readValue(response.body(), Quote.class);
     } else if (response.statusCode() / 100 == 4) {
+      if (response.statusCode() == 404) {
+        throw new NotFoundException(String.format(
+            "The quote for symbol '%s' is not found.", symbol));
+      }
       throw new InvalidInputException(String.format(
           "Can't get quote '%s' because of '%s' input error with status '%d'.",
           symbol, response.body(), response.statusCode()));
