@@ -21,8 +21,4 @@ import java.math.BigDecimal;
 /**
  * @author Raman Babich
  */
-public record OrderFeeCharge(
-    BigDecimal amount,
-    String type) {
-
-}
+public record OrderFeeCharge(BigDecimal amount, String type) {}

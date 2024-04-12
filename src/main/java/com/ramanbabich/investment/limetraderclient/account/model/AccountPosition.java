@@ -26,6 +26,4 @@ public record AccountPosition(
     Integer quantity,
     BigDecimal averageOpenPrice,
     BigDecimal currentPrice,
-    String securityType) {
-
-}
+    String securityType) {}

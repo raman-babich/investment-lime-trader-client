@@ -24,5 +24,4 @@ import com.ramanbabich.investment.limetraderclient.marketdata.model.QuoteChanged
 public interface QuoteChangedEventSubscriber {
 
   void onEvent(QuoteChangedEvent event);
-
 }

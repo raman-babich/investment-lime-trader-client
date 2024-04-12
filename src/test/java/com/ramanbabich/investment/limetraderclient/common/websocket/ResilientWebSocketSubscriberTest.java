@@ -36,10 +36,7 @@ class ResilientWebSocketSubscriberTest {
   private final CloseSubscriber closeSubscriber = Mockito.mock(CloseSubscriber.class);
   private final ErrorSubscriber errorSubscriber = Mockito.mock(ErrorSubscriber.class);
   private final ResilientWebSocketSubscriber subscriber = new ResilientWebSocketSubscriber(
-      textSubscriber,
-      pongSubscriber,
-      closeSubscriber,
-      errorSubscriber);
+      textSubscriber, pongSubscriber, closeSubscriber, errorSubscriber);
 
   @Test
   void shouldListen() {
@@ -94,5 +91,4 @@ class ResilientWebSocketSubscriberTest {
     Mockito.verify(errorSubscriber).onError(webSocket, throwable);
     Mockito.verifyNoInteractions(webSocket);
   }
-
 }

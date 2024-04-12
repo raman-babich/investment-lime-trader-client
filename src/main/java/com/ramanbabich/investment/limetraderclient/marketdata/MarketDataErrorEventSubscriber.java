@@ -24,5 +24,4 @@ import com.ramanbabich.investment.limetraderclient.marketdata.model.MarketDataEr
 public interface MarketDataErrorEventSubscriber {
 
   void onEvent(MarketDataErrorEvent event);
-
 }

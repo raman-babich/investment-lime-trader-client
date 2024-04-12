@@ -23,6 +23,5 @@ public final class OrderExchange {
 
   private static final String AUTO = "auto";
 
-  private OrderExchange() {
-  }
+  private OrderExchange() {}
 }

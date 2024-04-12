@@ -31,6 +31,4 @@ public record OrderValidationInfo(
     String orderType,
     String side,
     String comment,
-    String exchange) {
-
-}
+    String exchange) {}

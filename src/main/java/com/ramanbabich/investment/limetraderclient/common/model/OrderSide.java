@@ -26,6 +26,5 @@ public final class OrderSide {
   public static final String SELL_SHORT = "sell_short";
   public static final String BUY_TO_COVER = "buy_to_cover";
 
-  private OrderSide() {
-  }
+  private OrderSide() {}
 }

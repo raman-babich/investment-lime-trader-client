@@ -21,9 +21,4 @@ import java.time.LocalDate;
 /**
  * @author Raman Babich
  */
-public record OptionQuery(
-    String symbol,
-    LocalDate expiration,
-    String series) {
-
-}
+public record OptionQuery(String symbol, LocalDate expiration, String series) {}

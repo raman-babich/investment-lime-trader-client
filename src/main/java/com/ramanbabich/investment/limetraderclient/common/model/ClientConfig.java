@@ -22,9 +22,4 @@ import java.net.http.HttpClient;
  * @author Raman Babich
  */
 public record ClientConfig(
-    HttpClient httpClient,
-    String baseHttpAuthUrl,
-    String baseHttpApiUrl,
-    String baseWsApiUrl) {
-
-}
+    HttpClient httpClient, String baseHttpAuthUrl, String baseHttpApiUrl, String baseWsApiUrl) {}

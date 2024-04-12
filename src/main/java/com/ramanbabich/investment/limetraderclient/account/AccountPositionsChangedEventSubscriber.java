@@ -24,5 +24,4 @@ import com.ramanbabich.investment.limetraderclient.account.model.AccountPosition
 public interface AccountPositionsChangedEventSubscriber {
 
   void onEvent(AccountPositionsChangedEvent event);
-
 }

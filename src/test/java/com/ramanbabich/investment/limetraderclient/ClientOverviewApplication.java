@@ -75,10 +75,7 @@ class ClientOverviewApplication {
 
   public static void main(String[] args) throws Exception {
     ClientOverviewApplication application = new ClientOverviewApplication(new Credentials(
-        "<your-client-id>",
-        "<your-client-secret>",
-        "<your-username>",
-        "<your-password>"));
+        "<your-client-id>", "<your-client-secret>", "<your-username>", "<your-password>"));
     application.reviewAccountApi();
     application.reviewOrderApi();
     application.reviewPricingApi();
@@ -172,12 +169,8 @@ class ClientOverviewApplication {
     List<AccountBalance> accountBalances = client.getAccountBalances();
     System.out.println(accountBalances);
     String accountNumber = accountBalances.get(0).accountNumber();
-    OrderFeeChargeQuery orderFeeChargeQuery = new OrderFeeChargeQuery(
-        accountNumber,
-        "AMD",
-        1,
-        OrderSide.BUY,
-        BigDecimal.ONE);
+    OrderFeeChargeQuery orderFeeChargeQuery =
+        new OrderFeeChargeQuery(accountNumber, "AMD", 1, OrderSide.BUY, BigDecimal.ONE);
     List<OrderFeeCharge> orderFeeCharges = client.getOrderFeeCharges(orderFeeChargeQuery);
     System.out.println(orderFeeCharges);
   }
@@ -188,27 +181,22 @@ class ClientOverviewApplication {
     System.out.println(securities);
     List<String> optionSeries = client.getOptionSeries("AMD");
     optionSeries.forEach(System.out::println);
-    List<LocalDate> optionExpirations = client.getOptionExpirations(
-        new OptionExpirationQuery("AMD", optionSeries.get(0)));
+    List<LocalDate> optionExpirations =
+        client.getOptionExpirations(new OptionExpirationQuery("AMD", optionSeries.get(0)));
     optionExpirations.forEach(System.out::println);
-    List<Option> options = client.getOptions(new OptionQuery(
-        "AMD",
-        LocalDate.of(2025, 12, 19),
-        optionSeries.get(0)));
+    List<Option> options =
+        client.getOptions(new OptionQuery("AMD", LocalDate.of(2025, 12, 19), optionSeries.get(0)));
     options.forEach(System.out::println);
   }
 
-  private void reviewMarketDataApi() throws Exception{
+  private void reviewMarketDataApi() throws Exception {
     System.out.println("-".repeat(100) + " MARKET DATA API");
     Quote quote = client.getQuote("AMD");
     System.out.println(quote);
     List<Quote> quotes = client.getQuotes(List.of("AMD", "NVDA"));
     quotes.forEach(System.out::println);
     List<Candle> candles = client.getQuoteHistory(new QuoteHistoryQuery(
-        "AMD",
-        QuoteHistoryPeriod.HOUR,
-        Instant.now().minus(Duration.ofDays(1)),
-        Instant.now()));
+        "AMD", QuoteHistoryPeriod.HOUR, Instant.now().minus(Duration.ofDays(1)), Instant.now()));
     candles.forEach(System.out::println);
     TradingSchedule tradingSchedule = client.getTradingSchedule();
     System.out.println(tradingSchedule);
@@ -224,5 +212,4 @@ class ClientOverviewApplication {
   private void close() {
     client.close();
   }
-
 }

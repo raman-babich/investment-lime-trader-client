@@ -24,16 +24,12 @@ import java.util.List;
  * @author Raman Babich
  */
 public record AccountPositionsChangedEvent(
-    @JsonProperty("account") String accountNumber,
-    List<Position> positions) {
+    @JsonProperty("account") String accountNumber, List<Position> positions) {
 
   public record Position(
       String symbol,
       Integer quantity,
       BigDecimal averageOpenPrice,
       BigDecimal currentPrice,
-      String securityType) {
-
-  }
-
+      String securityType) {}
 }

@@ -29,6 +29,4 @@ public record AccountTradeChangedEvent(
     Integer quantity,
     BigDecimal price,
     BigDecimal amount,
-    String side) {
-
-}
+    String side) {}

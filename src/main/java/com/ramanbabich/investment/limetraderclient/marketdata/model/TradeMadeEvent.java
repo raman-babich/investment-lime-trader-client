@@ -30,8 +30,7 @@ public record TradeMadeEvent(
     @JsonProperty("lm") String lastMarket,
     @JsonProperty("l") BigDecimal last,
     @JsonFormat(
-        shape = JsonFormat.Shape.NUMBER,
-        without = JsonFormat.Feature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS)
-    @JsonProperty("d") Instant date) {
-
-}
+            shape = JsonFormat.Shape.NUMBER,
+            without = JsonFormat.Feature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS)
+        @JsonProperty("d")
+        Instant date) {}

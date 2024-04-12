@@ -22,10 +22,4 @@ import java.math.BigDecimal;
  * @author Raman Babich
  */
 public record OrderFeeChargeQuery(
-    String accountNumber,
-    String symbol,
-    Integer quantity,
-    String side,
-    BigDecimal price) {
-
-}
+    String accountNumber, String symbol, Integer quantity, String side, BigDecimal price) {}

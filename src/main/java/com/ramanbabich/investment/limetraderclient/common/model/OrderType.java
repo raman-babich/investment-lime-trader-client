@@ -28,6 +28,5 @@ public final class OrderType {
   public static final String MARKET_ON_CLOSE = "market_on_close";
   public static final String LIMIT_ON_CLOSE = "limit_on_close";
 
-  private OrderType() {
-  }
+  private OrderType() {}
 }

@@ -37,7 +37,8 @@ public class ResilientWebSocketSubscriber implements Listener {
   private final CloseSubscriber closeSubscriber;
   private final ErrorSubscriber errorSubscriber;
 
-  public ResilientWebSocketSubscriber(TextSubscriber textSubscriber,
+  public ResilientWebSocketSubscriber(
+      TextSubscriber textSubscriber,
       PongSubscriber pongSubscriber,
       CloseSubscriber closeSubscriber,
       ErrorSubscriber errorSubscriber) {
@@ -117,5 +118,4 @@ public class ResilientWebSocketSubscriber implements Listener {
   interface PongSubscriber {
     void onPong(WebSocket webSocket, ByteBuffer message);
   }
-
 }

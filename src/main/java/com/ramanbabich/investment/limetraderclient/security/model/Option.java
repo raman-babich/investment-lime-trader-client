@@ -21,9 +21,4 @@ import java.math.BigDecimal;
 /**
  * @author Raman Babich
  */
-public record Option(
-    String symbol,
-    String type,
-    BigDecimal strike) {
-
-}
+public record Option(String symbol, String type, BigDecimal strike) {}

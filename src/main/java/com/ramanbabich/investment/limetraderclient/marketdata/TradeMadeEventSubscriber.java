@@ -24,5 +24,4 @@ import com.ramanbabich.investment.limetraderclient.marketdata.model.TradeMadeEve
 public interface TradeMadeEventSubscriber {
 
   void onEvent(TradeMadeEvent event);
-
 }

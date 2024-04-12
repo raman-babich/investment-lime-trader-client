@@ -26,6 +26,5 @@ public final class TradingScheduleSession {
   public static final String AFTER_MARKET = "after_market";
   public static final String CLOSED = "closed";
 
-  private TradingScheduleSession() {
-  }
+  private TradingScheduleSession() {}
 }

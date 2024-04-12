@@ -32,7 +32,6 @@ public class AccountSubscriptionActionFactory {
   private static final String UNSUBSCRIBE_ACCOUNT_ORDER_ACTION = "unsubscribeOrders";
   private static final String UNSUBSCRIBE_ACCOUNT_TRADE_ACTION = "unsubscribeTrades";
 
-
   public AccountSubscriptionAction getAccountBalanceChangedEventAction(
       String accountNumber, boolean subscribe) {
     if (subscribe) {
@@ -64,5 +63,4 @@ public class AccountSubscriptionActionFactory {
     }
     return new AccountSubscriptionAction(UNSUBSCRIBE_ACCOUNT_TRADE_ACTION, accountNumber);
   }
-
 }

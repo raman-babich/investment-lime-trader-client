@@ -26,6 +26,5 @@ public final class AccountMarginType {
   public static final String MARGIN_X2 = "marginx2";
   public static final String DAYTRADER = "daytrader";
 
-  private AccountMarginType() {
-  }
+  private AccountMarginType() {}
 }

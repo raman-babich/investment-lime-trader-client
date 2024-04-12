@@ -26,6 +26,5 @@ public final class AccountRestriction {
   public static final String DISABLED = "disabled";
   public static final String CLOSED = "closed";
 
-  private AccountRestriction() {
-  }
+  private AccountRestriction() {}
 }

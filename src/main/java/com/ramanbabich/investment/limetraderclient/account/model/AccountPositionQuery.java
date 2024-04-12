@@ -21,8 +21,4 @@ import java.time.LocalDate;
 /**
  * @author Raman Babich
  */
-public record AccountPositionQuery(
-    String accountNumber,
-    LocalDate date) {
-
-}
+public record AccountPositionQuery(String accountNumber, LocalDate date) {}

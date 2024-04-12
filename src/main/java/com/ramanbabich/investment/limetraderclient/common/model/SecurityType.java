@@ -25,6 +25,5 @@ public final class SecurityType {
   public static final String PREFERRED_STOCK = "preferred_stock";
   public static final String OPTION = "option";
 
-  private SecurityType() {
-  }
+  private SecurityType() {}
 }

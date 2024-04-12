@@ -41,7 +41,7 @@ class WebSocketPingSenderTest {
     CompletableFuture<WebSocket> webSocketFuture =
         (CompletableFuture<WebSocket>) Mockito.mock(CompletableFuture.class);
     Mockito.when(webSocket.sendPing(ByteBuffer.wrap(MESSAGE.getBytes(StandardCharsets.UTF_8))))
-            .thenReturn(webSocketFuture);
+        .thenReturn(webSocketFuture);
 
     sender.send();
 
@@ -55,5 +55,4 @@ class WebSocketPingSenderTest {
 
     Assertions.assertThrows(PingSendingFailedException.class, sender::send);
   }
-
 }

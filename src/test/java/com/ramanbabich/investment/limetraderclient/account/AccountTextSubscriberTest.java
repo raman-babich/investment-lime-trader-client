@@ -55,20 +55,18 @@ class AccountTextSubscriberTest {
   void shouldInvokeBalanceChangedEventSubscriber() throws Exception {
     List<AccountBalanceChangedEvent> actual = new ArrayList<>();
     textSubscriber.setSubscriber((AccountBalanceChangedEventSubscriber) actual::add);
-    List<AccountBalanceChangedEvent> expected = List.of(
-        buildAccountBalanceChangedEventSample(),
-        buildAccountBalanceChangedEventSample());
+    List<AccountBalanceChangedEvent> expected =
+        List.of(buildAccountBalanceChangedEventSample(), buildAccountBalanceChangedEventSample());
     String text = "text";
     Map<String, Object> parsedData = buildParsedDataSample(BALANCE_CHANGED_DATA_TYPE);
     Mockito.when(jsonMapper.readValue(
-        text,
-        TypeFactory.defaultInstance()
-            .constructMapType(Map.class, String.class, Object.class)))
+            text,
+            TypeFactory.defaultInstance().constructMapType(Map.class, String.class, Object.class)))
         .thenReturn(parsedData);
     Mockito.when(jsonMapper.convertValue(
-        parsedData.get(DATA_PROPERTY),
-        TypeFactory.defaultInstance()
-            .constructCollectionType(List.class, AccountBalanceChangedEvent.class)))
+            parsedData.get(DATA_PROPERTY),
+            TypeFactory.defaultInstance()
+                .constructCollectionType(List.class, AccountBalanceChangedEvent.class)))
         .thenReturn(expected);
 
     textSubscriber.onText(text);
@@ -80,9 +78,7 @@ class AccountTextSubscriberTest {
     if (ERROR_DATA_TYPE.equals(type)) {
       return Map.of(DATA_TYPE_PROPERTY, type);
     }
-    return Map.of(
-        DATA_TYPE_PROPERTY, type,
-        DATA_PROPERTY, "data");
+    return Map.of(DATA_TYPE_PROPERTY, type, DATA_PROPERTY, "data");
   }
 
   private static AccountBalanceChangedEvent buildAccountBalanceChangedEventSample() {
@@ -109,14 +105,12 @@ class AccountTextSubscriberTest {
     List<AccountPositionsChangedEvent> actual = new ArrayList<>();
     textSubscriber.setSubscriber((AccountPositionsChangedEventSubscriber) actual::add);
     List<AccountPositionsChangedEvent> expected = List.of(
-        buildAccountPositionsChangedEventSample(),
-        buildAccountPositionsChangedEventSample());
+        buildAccountPositionsChangedEventSample(), buildAccountPositionsChangedEventSample());
     String text = "text";
     Map<String, Object> parsedData = buildParsedDataSample(POSITIONS_CHANGED_DATA_TYPE);
     Mockito.when(jsonMapper.readValue(
             text,
-            TypeFactory.defaultInstance()
-                .constructMapType(Map.class, String.class, Object.class)))
+            TypeFactory.defaultInstance().constructMapType(Map.class, String.class, Object.class)))
         .thenReturn(parsedData);
     Mockito.when(jsonMapper.convertValue(
             parsedData.get(DATA_PROPERTY),
@@ -132,27 +126,20 @@ class AccountTextSubscriberTest {
   private static AccountPositionsChangedEvent buildAccountPositionsChangedEventSample() {
     return new AccountPositionsChangedEvent(
         "accountNumber",
-        List.of(new Position(
-            "symbol",
-            1,
-            BigDecimal.ONE,
-            BigDecimal.ONE,
-            "securityType")));
+        List.of(new Position("symbol", 1, BigDecimal.ONE, BigDecimal.ONE, "securityType")));
   }
 
   @Test
   void shouldInvokeOrderChangedEventSubscriber() throws Exception {
     List<AccountOrderChangedEvent> actual = new ArrayList<>();
     textSubscriber.setSubscriber((AccountOrderChangedEventSubscriber) actual::add);
-    List<AccountOrderChangedEvent> expected = List.of(
-        buildAccountOrderChangedEventSample(),
-        buildAccountOrderChangedEventSample());
+    List<AccountOrderChangedEvent> expected =
+        List.of(buildAccountOrderChangedEventSample(), buildAccountOrderChangedEventSample());
     String text = "text";
     Map<String, Object> parsedData = buildParsedDataSample(ORDER_CHANGED_DATA_TYPE);
     Mockito.when(jsonMapper.readValue(
             text,
-            TypeFactory.defaultInstance()
-                .constructMapType(Map.class, String.class, Object.class)))
+            TypeFactory.defaultInstance().constructMapType(Map.class, String.class, Object.class)))
         .thenReturn(parsedData);
     Mockito.when(jsonMapper.convertValue(
             parsedData.get(DATA_PROPERTY),
@@ -188,15 +175,13 @@ class AccountTextSubscriberTest {
   void shouldInvokeTradeChangedEventSubscriber() throws Exception {
     List<AccountTradeChangedEvent> actual = new ArrayList<>();
     textSubscriber.setSubscriber((AccountTradeChangedEventSubscriber) actual::add);
-    List<AccountTradeChangedEvent> expected = List.of(
-        buildAccountTradeChangedEventSample(),
-        buildAccountTradeChangedEventSample());
+    List<AccountTradeChangedEvent> expected =
+        List.of(buildAccountTradeChangedEventSample(), buildAccountTradeChangedEventSample());
     String text = "text";
     Map<String, Object> parsedData = buildParsedDataSample(TRADE_CHANGED_DATA_TYPE);
     Mockito.when(jsonMapper.readValue(
             text,
-            TypeFactory.defaultInstance()
-                .constructMapType(Map.class, String.class, Object.class)))
+            TypeFactory.defaultInstance().constructMapType(Map.class, String.class, Object.class)))
         .thenReturn(parsedData);
     Mockito.when(jsonMapper.convertValue(
             parsedData.get(DATA_PROPERTY),
@@ -229,11 +214,9 @@ class AccountTextSubscriberTest {
     Map<String, Object> parsedData = buildParsedDataSample(ERROR_DATA_TYPE);
     Mockito.when(jsonMapper.readValue(
             text,
-            TypeFactory.defaultInstance()
-                .constructMapType(Map.class, String.class, Object.class)))
+            TypeFactory.defaultInstance().constructMapType(Map.class, String.class, Object.class)))
         .thenReturn(parsedData);
-    Mockito.when(jsonMapper.convertValue(parsedData, AccountErrorEvent.class))
-        .thenReturn(expected);
+    Mockito.when(jsonMapper.convertValue(parsedData, AccountErrorEvent.class)).thenReturn(expected);
 
     textSubscriber.onText(text);
 
@@ -241,23 +224,19 @@ class AccountTextSubscriberTest {
   }
 
   private static AccountErrorEvent buildAccountErrorEventSample() {
-    return new AccountErrorEvent(
-        "code",
-        "description");
+    return new AccountErrorEvent("code", "description");
   }
 
   @Test
   void shouldSkipIfNoSubscriberSpecified() throws Exception {
     textSubscriber.setSubscriber((AccountBalanceChangedEventSubscriber) null);
-    List<AccountBalanceChangedEvent> events = List.of(
-        buildAccountBalanceChangedEventSample(),
-        buildAccountBalanceChangedEventSample());
+    List<AccountBalanceChangedEvent> events =
+        List.of(buildAccountBalanceChangedEventSample(), buildAccountBalanceChangedEventSample());
     String text = "text";
     Map<String, Object> parsedData = buildParsedDataSample(BALANCE_CHANGED_DATA_TYPE);
     Mockito.when(jsonMapper.readValue(
             text,
-            TypeFactory.defaultInstance()
-                .constructMapType(Map.class, String.class, Object.class)))
+            TypeFactory.defaultInstance().constructMapType(Map.class, String.class, Object.class)))
         .thenReturn(parsedData);
     Mockito.when(jsonMapper.convertValue(
             parsedData.get(DATA_PROPERTY),
@@ -274,8 +253,7 @@ class AccountTextSubscriberTest {
     Map<String, Object> parsedData = buildParsedDataSample("unknown");
     Mockito.when(jsonMapper.readValue(
             text,
-            TypeFactory.defaultInstance()
-                .constructMapType(Map.class, String.class, Object.class)))
+            TypeFactory.defaultInstance().constructMapType(Map.class, String.class, Object.class)))
         .thenReturn(parsedData);
 
     textSubscriber.onText(text);
@@ -287,8 +265,7 @@ class AccountTextSubscriberTest {
     Map<String, Object> parsedData = buildParsedDataSample(BALANCE_CHANGED_DATA_TYPE);
     Mockito.when(jsonMapper.readValue(
             text,
-            TypeFactory.defaultInstance()
-                .constructMapType(Map.class, String.class, Object.class)))
+            TypeFactory.defaultInstance().constructMapType(Map.class, String.class, Object.class)))
         .thenReturn(parsedData);
     Mockito.when(jsonMapper.convertValue(
             parsedData.get(DATA_PROPERTY),
@@ -296,9 +273,7 @@ class AccountTextSubscriberTest {
                 .constructCollectionType(List.class, AccountBalanceChangedEvent.class)))
         .thenThrow(IllegalArgumentException.class);
 
-    Assertions.assertThrows(
-        DataProcessingFailedException.class,
-        () -> textSubscriber.onText(text));
+    Assertions.assertThrows(DataProcessingFailedException.class, () -> textSubscriber.onText(text));
   }
 
   @Test
@@ -306,13 +281,9 @@ class AccountTextSubscriberTest {
     String text = "text";
     Mockito.when(jsonMapper.readValue(
             text,
-            TypeFactory.defaultInstance()
-                .constructMapType(Map.class, String.class, Object.class)))
+            TypeFactory.defaultInstance().constructMapType(Map.class, String.class, Object.class)))
         .thenThrow(JsonProcessingException.class);
 
-    Assertions.assertThrows(
-        DataProcessingFailedException.class,
-        () -> textSubscriber.onText(text));
+    Assertions.assertThrows(DataProcessingFailedException.class, () -> textSubscriber.onText(text));
   }
-
 }

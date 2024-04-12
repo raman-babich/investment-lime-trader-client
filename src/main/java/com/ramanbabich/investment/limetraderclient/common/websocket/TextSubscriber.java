@@ -22,5 +22,4 @@ package com.ramanbabich.investment.limetraderclient.common.websocket;
 public interface TextSubscriber {
 
   void onText(String text);
-
 }

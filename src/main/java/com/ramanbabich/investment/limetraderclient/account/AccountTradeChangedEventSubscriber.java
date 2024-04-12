@@ -24,5 +24,4 @@ import com.ramanbabich.investment.limetraderclient.account.model.AccountTradeCha
 public interface AccountTradeChangedEventSubscriber {
 
   void onEvent(AccountTradeChangedEvent event);
-
 }

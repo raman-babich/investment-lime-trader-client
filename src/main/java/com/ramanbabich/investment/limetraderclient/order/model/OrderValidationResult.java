@@ -19,8 +19,4 @@ package com.ramanbabich.investment.limetraderclient.order.model;
 /**
  * @author Raman Babich
  */
-public record OrderValidationResult(
-    Boolean isValid,
-    String validationMessage) {
-
-}
+public record OrderValidationResult(Boolean isValid, String validationMessage) {}

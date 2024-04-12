@@ -19,10 +19,4 @@ package com.ramanbabich.investment.limetraderclient.auth.model;
 /**
  * @author Raman Babich
  */
-public record Credentials(
-    String clientId,
-    String clientSecret,
-    String username,
-    String password) {
-
-}
+public record Credentials(String clientId, String clientSecret, String username, String password) {}

@@ -19,8 +19,4 @@ package com.ramanbabich.investment.limetraderclient.account.model;
 /**
  * @author Raman Babich
  */
-public record AccountErrorEvent(
-    String code,
-    String description) {
-
-}
+public record AccountErrorEvent(String code, String description) {}

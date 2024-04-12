@@ -34,9 +34,10 @@ public record QuoteChangedEvent(
     @JsonProperty("ls") Integer lastSize,
     @JsonProperty("v") Integer volume,
     @JsonFormat(
-        shape = JsonFormat.Shape.NUMBER,
-        without = JsonFormat.Feature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS)
-    @JsonProperty("d") Instant date,
+            shape = JsonFormat.Shape.NUMBER,
+            without = JsonFormat.Feature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS)
+        @JsonProperty("d")
+        Instant date,
     @JsonProperty("h") BigDecimal high,
     BigDecimal low,
     @JsonProperty("o") BigDecimal open,
@@ -48,6 +49,4 @@ public record QuoteChangedEvent(
     BigDecimal delta,
     BigDecimal gamma,
     BigDecimal theta,
-    BigDecimal vega) {
-
-}
+    BigDecimal vega) {}

@@ -29,6 +29,4 @@ public record Candle(
     BigDecimal high,
     BigDecimal low,
     BigDecimal close,
-    Integer volume) {
-
-}
+    Integer volume) {}

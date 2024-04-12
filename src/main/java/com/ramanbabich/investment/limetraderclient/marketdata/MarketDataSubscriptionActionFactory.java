@@ -33,5 +33,4 @@ public class MarketDataSubscriptionActionFactory {
     }
     return new MarketDataSubscriptionAction(UNSUBSCRIBE_ACTION, symbols);
   }
-
 }

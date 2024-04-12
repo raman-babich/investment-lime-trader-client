@@ -19,8 +19,4 @@ package com.ramanbabich.investment.limetraderclient.order.model;
 /**
  * @author Raman Babich
  */
-public record OrderCancellationResult(
-    Boolean success,
-    String data) {
-
-}
+public record OrderCancellationResult(Boolean success, String data) {}
