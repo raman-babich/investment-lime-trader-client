@@ -21,10 +21,4 @@ import java.time.Instant;
 /**
  * @author Raman Babich
  */
-public record QuoteHistoryQuery(
-    String symbol,
-    String period,
-    Instant from,
-    Instant to) {
-
-}
+public record QuoteHistoryQuery(String symbol, String period, Instant from, Instant to) {}

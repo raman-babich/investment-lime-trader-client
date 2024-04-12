@@ -22,14 +22,7 @@ import java.util.List;
 /**
  * @author Raman Babich
  */
-public record SecurityList(
-    @JsonProperty("trades") List<Security> securities,
-    Integer count) {
+public record SecurityList(@JsonProperty("trades") List<Security> securities, Integer count) {
 
-  public record Security(
-      String symbol,
-      String description) {
-
-  }
-
+  public record Security(String symbol, String description) {}
 }

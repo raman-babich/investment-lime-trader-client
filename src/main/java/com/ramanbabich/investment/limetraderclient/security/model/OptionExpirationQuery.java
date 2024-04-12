@@ -19,8 +19,4 @@ package com.ramanbabich.investment.limetraderclient.security.model;
 /**
  * @author Raman Babich
  */
-public record OptionExpirationQuery(
-    String symbol,
-    String series) {
-
-}
+public record OptionExpirationQuery(String symbol, String series) {}

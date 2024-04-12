@@ -24,5 +24,4 @@ import com.ramanbabich.investment.limetraderclient.account.model.AccountErrorEve
 public interface AccountErrorEventSubscriber {
 
   void onEvent(AccountErrorEvent event);
-
 }

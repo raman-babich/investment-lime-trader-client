@@ -49,18 +49,26 @@ public class ResilientWebSocket implements AutoCloseable {
   private final Map<String, String> state = new TreeMap<>();
   private boolean closed = false;
 
-  public ResilientWebSocket(String id, URI uri, WebSocketBuilderProvider webSocketBuilderProvider,
+  public ResilientWebSocket(
+      String id,
+      URI uri,
+      WebSocketBuilderProvider webSocketBuilderProvider,
       TextSubscriber textSubscriber) {
     this(id, uri, webSocketBuilderProvider, null, textSubscriber);
   }
 
-  public ResilientWebSocket(String id, URI uri, WebSocketBuilderProvider webSocketBuilderProvider,
-      Long pingIntervalMillis, TextSubscriber textSubscriber) {
+  public ResilientWebSocket(
+      String id,
+      URI uri,
+      WebSocketBuilderProvider webSocketBuilderProvider,
+      Long pingIntervalMillis,
+      TextSubscriber textSubscriber) {
     this.id = Objects.requireNonNull(id, "Id should be specified");
     this.uri = Objects.requireNonNull(uri, "Uri should be specified");
     this.webSocketBuilderProvider = Objects.requireNonNull(
         webSocketBuilderProvider, "Web socket builder provider should be specified.");
-    Objects.requireNonNull(this.webSocketBuilderProvider.provide(),
+    Objects.requireNonNull(
+        this.webSocketBuilderProvider.provide(),
         "Web socket builder provider should provide builder for web socket.");
     this.pingIntervalMillis = pingIntervalMillis;
     this.textSubscriber = textSubscriber;
@@ -74,8 +82,8 @@ public class ResilientWebSocket implements AutoCloseable {
         Thread.currentThread().interrupt();
       }
       throw new StateChangeFailedException(
-          String.format("Failed during inserting '%s' to resilient web socket '%s' state.",
-              property, id),
+          String.format(
+              "Failed during inserting '%s' to resilient web socket '%s' state.", property, id),
           ex);
     }
   }
@@ -105,19 +113,21 @@ public class ResilientWebSocket implements AutoCloseable {
     while (!setupSuccessfully) {
       try {
         ++attemptNumber;
-        LOG.info("Setting up resilient web socket '{}', attempt number '{}'.",
-            id, attemptNumber);
+        LOG.info("Setting up resilient web socket '{}', attempt number '{}'.", id, attemptNumber);
         setupWebSocket();
         setupSuccessfully = true;
-        LOG.info("Resilient web socket '{}' is set up during attempt number '{}'.",
-            id, attemptNumber);
+        LOG.info(
+            "Resilient web socket '{}' is set up during attempt number '{}'.", id, attemptNumber);
       } catch (ExecutionException | TimeoutException ex) {
         if (LOG.isDebugEnabled()) {
-          LOG.debug("Attempt number '{}' failed to setup resilient web socket '{}'",
-              attemptNumber, id, ex);
+          LOG.debug(
+              "Attempt number '{}' failed to setup resilient web socket '{}'",
+              attemptNumber,
+              id,
+              ex);
         } else {
-          LOG.info("Attempt number '{}' failed to setup resilient web socket '{}'",
-              attemptNumber, id);
+          LOG.info(
+              "Attempt number '{}' failed to setup resilient web socket '{}'", attemptNumber, id);
         }
         if (backoffMillis < maxBackoffMillis) {
           TimeUnit.MILLISECONDS.sleep(backoffMillis);
@@ -134,16 +144,16 @@ public class ResilientWebSocket implements AutoCloseable {
       return;
     }
     webSocketSubscriber = buildResilientWebSocketSubscriber(textSubscriber);
-    webSocket = webSocketBuilderProvider.provide()
+    webSocket = webSocketBuilderProvider
+        .provide()
         .buildAsync(uri, webSocketSubscriber)
         .get(10, TimeUnit.SECONDS);
     pingPongPlayer = new PingPongPlayer(
-        id,
-        new WebSocketPingSender(id, webSocket),
-        pingIntervalMillis,
-        player -> {
-          LOG.info("Resilient web socket '{}' didn't receive pong event. "
-              + "Recovering will be performed.", id);
+        id, new WebSocketPingSender(id, webSocket), pingIntervalMillis, player -> {
+          LOG.info(
+              "Resilient web socket '{}' didn't receive pong event. "
+                  + "Recovering will be performed.",
+              id);
           recoverWebSocket(((WebSocketPingSender) player.getPingSender()).getWebSocket());
         });
     pingPongPlayerThread = new Thread(pingPongPlayer, id + "-ping-pong-player");
@@ -158,14 +168,19 @@ public class ResilientWebSocket implements AutoCloseable {
         textSubscriber,
         (targetWebSocket, message) -> sendPongToPingPongPlayer(targetWebSocket),
         (targetWebSocket, statusCode, reason) -> {
-          LOG.info("Resilient web socket '{}' received close event with '{}' status code "
+          LOG.info(
+              "Resilient web socket '{}' received close event with '{}' status code "
                   + "and '{}' reason. Recovering will be performed.",
-              id, statusCode, reason);
+              id,
+              statusCode,
+              reason);
           recoverWebSocket(targetWebSocket);
         },
         (targetWebSocket, error) -> {
-          LOG.warn("Resilient web socket '{}' received error event. Recovering will be performed.",
-              id, error);
+          LOG.warn(
+              "Resilient web socket '{}' received error event. Recovering will be performed.",
+              id,
+              error);
           recoverWebSocket(targetWebSocket);
         });
   }
@@ -183,14 +198,18 @@ public class ResilientWebSocket implements AutoCloseable {
   private synchronized void recoverWebSocket(WebSocket targetWebSocket) {
     try {
       if (webSocket != targetWebSocket) {
-        LOG.info("Recovering for '{}' will not be performed because target web socket "
-            + "is not available. An attempt will be made to close it.", id);
+        LOG.info(
+            "Recovering for '{}' will not be performed because target web socket "
+                + "is not available. An attempt will be made to close it.",
+            id);
         try {
           closeWebSocket(targetWebSocket);
         } catch (ExecutionException | TimeoutException ex) {
-          LOG.info("Attempt to close target web socket for '{}' is failed. "
-              + "It perhaps is closed already. Can't perform any additional actions to free "
-              + "the resources, that is why ignoring this exceptional case.", id);
+          LOG.info(
+              "Attempt to close target web socket for '{}' is failed. "
+                  + "It perhaps is closed already. Can't perform any additional actions to free "
+                  + "the resources, that is why ignoring this exceptional case.",
+              id);
         }
         return;
       }
@@ -205,9 +224,12 @@ public class ResilientWebSocket implements AutoCloseable {
       LOG.info("Resilient web socket '{}' is recovered.", id);
     } catch (InterruptedException ex) {
       Thread.currentThread().interrupt();
-      LOG.error("Resilient web socket '{}' recovering thread is interrupted, "
-          + "this led to illegal state. Any further operation could has "
-          + "unpredictable behaviour.", id, ex);
+      LOG.error(
+          "Resilient web socket '{}' recovering thread is interrupted, "
+              + "this led to illegal state. Any further operation could has "
+              + "unpredictable behaviour.",
+          id,
+          ex);
     }
   }
 
@@ -240,19 +262,21 @@ public class ResilientWebSocket implements AutoCloseable {
     while (!closedSuccessfully) {
       try {
         ++attemptNumber;
-        LOG.info("Closing resilient web socket '{}', attempt number '{}'.",
-            id, attemptNumber);
+        LOG.info("Closing resilient web socket '{}', attempt number '{}'.", id, attemptNumber);
         closeWebSocket();
         closedSuccessfully = true;
-        LOG.info("Resilient web socket '{}' is closed during '{}' attempt number.",
-            id, attemptNumber);
+        LOG.info(
+            "Resilient web socket '{}' is closed during '{}' attempt number.", id, attemptNumber);
       } catch (ExecutionException | TimeoutException ex) {
         if (LOG.isDebugEnabled()) {
-          LOG.debug("Attempt number '{}' failed to close resilient web socket '{}'.",
-              attemptNumber, id, ex);
+          LOG.debug(
+              "Attempt number '{}' failed to close resilient web socket '{}'.",
+              attemptNumber,
+              id,
+              ex);
         } else {
-          LOG.info("Attempt number '{}' failed to close resilient web socket '{}'.",
-              attemptNumber, id);
+          LOG.info(
+              "Attempt number '{}' failed to close resilient web socket '{}'.", attemptNumber, id);
         }
         if (backoffMillis < maxBackoffMillis) {
           TimeUnit.MILLISECONDS.sleep(backoffMillis);
@@ -280,8 +304,7 @@ public class ResilientWebSocket implements AutoCloseable {
   private void closeWebSocket(WebSocket webSocket)
       throws ExecutionException, TimeoutException, InterruptedException {
     if (!webSocket.isOutputClosed()) {
-      webSocket.sendClose(WebSocket.NORMAL_CLOSURE, "end-of-session")
-          .get(10, TimeUnit.SECONDS);
+      webSocket.sendClose(WebSocket.NORMAL_CLOSURE, "end-of-session").get(10, TimeUnit.SECONDS);
       int repeatNumber = 0;
       while (repeatNumber < 5 && (!webSocket.isInputClosed() || !webSocket.isOutputClosed())) {
         ++repeatNumber;
@@ -289,9 +312,12 @@ public class ResilientWebSocket implements AutoCloseable {
       }
     }
     if (!webSocket.isInputClosed() || !webSocket.isOutputClosed()) {
-      LOG.warn("Can't wait more for closing of resilient web socket '{}' the input is closed({}), "
+      LOG.warn(
+          "Can't wait more for closing of resilient web socket '{}' the input is closed({}), "
               + "the output is closed({}), that is why web socket will be closed abruptly.",
-          id, webSocket.isInputClosed(), webSocket.isOutputClosed());
+          id,
+          webSocket.isInputClosed(),
+          webSocket.isOutputClosed());
       webSocket.abort();
     }
   }
@@ -305,22 +331,35 @@ public class ResilientWebSocket implements AutoCloseable {
     while (!insertedSuccessfully) {
       try {
         ++attemptNumber;
-        LOG.info("Inserting property '{}' to resilient web socket '{}' state, attempt number '{}'.",
-            property, id, attemptNumber);
+        LOG.info(
+            "Inserting property '{}' to resilient web socket '{}' state, attempt number '{}'.",
+            property,
+            id,
+            attemptNumber);
         doInsertToState(property, data);
         insertedSuccessfully = true;
-        LOG.info("Property '{}' is inserted to resilient web socket '{}' state during "
+        LOG.info(
+            "Property '{}' is inserted to resilient web socket '{}' state during "
                 + "attempt number '{}'.",
-            property, id, attemptNumber);
+            property,
+            id,
+            attemptNumber);
       } catch (ExecutionException | TimeoutException ex) {
         if (LOG.isDebugEnabled()) {
-          LOG.debug("Attempt number '{}' failed to insert to "
+          LOG.debug(
+              "Attempt number '{}' failed to insert to "
                   + "resilient web socket '{}' property '{}'.",
-              attemptNumber, id, property, ex);
+              attemptNumber,
+              id,
+              property,
+              ex);
         } else {
-          LOG.info("Attempt number '{}' failed to insert to "
+          LOG.info(
+              "Attempt number '{}' failed to insert to "
                   + "resilient web socket '{}' property '{}'.",
-              attemptNumber, id, property);
+              attemptNumber,
+              id,
+              property);
         }
         if (backoffMillis < maxBackoffMillis) {
           TimeUnit.MILLISECONDS.sleep(backoffMillis);
@@ -332,8 +371,8 @@ public class ResilientWebSocket implements AutoCloseable {
     }
   }
 
-  public synchronized String updateState(String property,
-      String newData, Function<String, String> stateTransitionDataFunction) {
+  public synchronized String updateState(
+      String property, String newData, Function<String, String> stateTransitionDataFunction) {
     try {
       return doUpdateState(property, newData, stateTransitionDataFunction);
     } catch (ExecutionException | TimeoutException | InterruptedException ex) {
@@ -341,14 +380,14 @@ public class ResilientWebSocket implements AutoCloseable {
         Thread.currentThread().interrupt();
       }
       throw new StateChangeFailedException(
-          String.format("Failed during updating '%s' in resilient web socket '%s' state.",
-              property, id),
+          String.format(
+              "Failed during updating '%s' in resilient web socket '%s' state.", property, id),
           ex);
     }
   }
 
-  private String doUpdateState(String property, String newData,
-      Function<String, String> stateTransitionDataFunction)
+  private String doUpdateState(
+      String property, String newData, Function<String, String> stateTransitionDataFunction)
       throws ExecutionException, TimeoutException, InterruptedException {
     Objects.requireNonNull(property, "Property should be specified.");
     Objects.requireNonNull(
@@ -379,8 +418,8 @@ public class ResilientWebSocket implements AutoCloseable {
         Thread.currentThread().interrupt();
       }
       throw new StateChangeFailedException(
-          String.format("Failed during removing '%s' from resilient web socket '%s' state.",
-              property, id),
+          String.format(
+              "Failed during removing '%s' from resilient web socket '%s' state.", property, id),
           ex);
     }
   }

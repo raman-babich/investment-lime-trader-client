@@ -170,15 +170,15 @@ class LimeTraderClientTest {
         .build();
     HttpResponse<String> response = (HttpResponse<String>) Mockito.mock(HttpResponse.class);
     Mockito.when(clientWithMocks.httpClient.send(request, BodyHandlers.ofString()))
-            .thenReturn(response);
+        .thenReturn(response);
     Mockito.when(response.statusCode()).thenReturn(200);
     String responseBody = "responseBody";
     Mockito.when(response.body()).thenReturn(responseBody);
     List<AccountBalance> expected = List.of(buildAccountBalanceSample());
     Mockito.when(clientWithMocks.jsonMapper.readValue(
-        responseBody,
-        TypeFactory.defaultInstance()
-            .constructCollectionType(List.class, AccountBalance.class)))
+            responseBody,
+            TypeFactory.defaultInstance()
+                .constructCollectionType(List.class, AccountBalance.class)))
         .thenReturn(expected);
 
     Assertions.assertEquals(expected, clientWithMocks.client.getAccountBalances());
@@ -220,9 +220,9 @@ class LimeTraderClientTest {
     String responseBody = "responseBody";
     Mockito.when(response.body()).thenReturn(responseBody);
     Mockito.when(clientWithMocks.jsonMapper.readValue(
-        responseBody,
-        TypeFactory.defaultInstance()
-            .constructCollectionType(List.class, AccountBalance.class)))
+            responseBody,
+            TypeFactory.defaultInstance()
+                .constructCollectionType(List.class, AccountBalance.class)))
         .thenReturn(List.of());
 
     clientWithMocks.client.getAccountBalances();
@@ -241,7 +241,8 @@ class LimeTraderClientTest {
     AccountPositionQuery query = new AccountPositionQuery("accountNumber", LocalDate.now());
     Map<String, String> requestParams = new TreeMap<>();
     requestParams.put("date", DateTimeFormatter.ISO_DATE.format(query.date()));
-    URI uri = buildUri(String.format(
+    URI uri = buildUri(
+        String.format(
             accountPositionsUrlPattern,
             URLEncoder.encode(query.accountNumber(), StandardCharsets.UTF_8)),
         requestParams);
@@ -252,21 +253,16 @@ class LimeTraderClientTest {
         .build();
     HttpResponse<String> response = (HttpResponse<String>) Mockito.mock(HttpResponse.class);
     Mockito.when(clientWithMocks.httpClient.send(request, BodyHandlers.ofString()))
-            .thenReturn(response);
+        .thenReturn(response);
     Mockito.when(response.statusCode()).thenReturn(200);
     String responseBody = "responseBody";
     Mockito.when(response.body()).thenReturn(responseBody);
     List<AccountPosition> expected = List.of(
-        new AccountPosition(
-            "accountNumber",
-            1,
-            BigDecimal.ONE,
-            BigDecimal.ONE,
-            "securityType"));
+        new AccountPosition("accountNumber", 1, BigDecimal.ONE, BigDecimal.ONE, "securityType"));
     Mockito.when(clientWithMocks.jsonMapper.readValue(
-        responseBody,
-        TypeFactory.defaultInstance()
-            .constructCollectionType(List.class, AccountPosition.class)))
+            responseBody,
+            TypeFactory.defaultInstance()
+                .constructCollectionType(List.class, AccountPosition.class)))
         .thenReturn(expected);
 
     Assertions.assertEquals(expected, clientWithMocks.client.getAccountPositions(query));
@@ -277,20 +273,16 @@ class LimeTraderClientTest {
   void shouldGetAccountTrades() throws Exception {
     ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
     Authentication auth = mockSuccessfulAuth(clientWithMocks);
-    AccountTradeQuery query = new AccountTradeQuery(
-        "accountNumber",
-        LocalDate.now(),
-        1,
-        0);
+    AccountTradeQuery query = new AccountTradeQuery("accountNumber", LocalDate.now(), 1, 0);
     Map<String, String> requestParams = new TreeMap<>();
     requestParams.put("limit", query.limit().toString());
     requestParams.put("skip", query.skip().toString());
-    URI uri = buildUri(String.format(
+    URI uri = buildUri(
+        String.format(
             accountTradesUrlPattern,
             URLEncoder.encode(query.accountNumber(), StandardCharsets.UTF_8),
             URLEncoder.encode(
-                DateTimeFormatter.ISO_DATE.format(query.date()),
-                StandardCharsets.UTF_8)),
+                DateTimeFormatter.ISO_DATE.format(query.date()), StandardCharsets.UTF_8)),
         requestParams);
     HttpRequest request = HttpRequest.newBuilder()
         .uri(uri)
@@ -304,18 +296,10 @@ class LimeTraderClientTest {
     String responseBody = "responseBody";
     Mockito.when(response.body()).thenReturn(responseBody);
     AccountTradeList expected = new AccountTradeList(
-        List.of(
-            new Trade(
-                "symbol",
-                Instant.ofEpochMilli(0),
-                1,
-                BigDecimal.ONE,
-                BigDecimal.ONE,
-                "side")),
+        List.of(new Trade(
+            "symbol", Instant.ofEpochMilli(0), 1, BigDecimal.ONE, BigDecimal.ONE, "side")),
         1);
-    Mockito.when(clientWithMocks.jsonMapper.readValue(
-            responseBody,
-            AccountTradeList.class))
+    Mockito.when(clientWithMocks.jsonMapper.readValue(responseBody, AccountTradeList.class))
         .thenReturn(expected);
 
     Assertions.assertEquals(expected, clientWithMocks.client.getAccountTrades(query));
@@ -328,8 +312,7 @@ class LimeTraderClientTest {
     Authentication auth = mockSuccessfulAuth(clientWithMocks);
     String accountNumber = "accountNumber";
     URI uri = URI.create(String.format(
-        accountActiveOrderUrlPattern,
-        URLEncoder.encode(accountNumber, StandardCharsets.UTF_8)));
+        accountActiveOrderUrlPattern, URLEncoder.encode(accountNumber, StandardCharsets.UTF_8)));
     HttpRequest request = HttpRequest.newBuilder()
         .uri(uri)
         .header("accept", "application/json")
@@ -376,17 +359,14 @@ class LimeTraderClientTest {
     ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
     Authentication auth = mockSuccessfulAuth(clientWithMocks);
     AccountTransactionQuery query = new AccountTransactionQuery(
-        "accountNumber",
-        LocalDate.now().minus(Period.ofDays(1)),
-        LocalDate.now(),
-        1,
-        0);
+        "accountNumber", LocalDate.now().minus(Period.ofDays(1)), LocalDate.now(), 1, 0);
     Map<String, String> requestParams = new TreeMap<>();
     requestParams.put("start_date", DateTimeFormatter.ISO_DATE.format(query.startDate()));
     requestParams.put("end_date", DateTimeFormatter.ISO_DATE.format(query.endDate()));
     requestParams.put("limit", query.limit().toString());
     requestParams.put("skip", query.skip().toString());
-    URI uri = buildUri(String.format(
+    URI uri = buildUri(
+        String.format(
             accountTransactionsUrlPattern,
             URLEncoder.encode(query.accountNumber(), StandardCharsets.UTF_8)),
         requestParams);
@@ -401,11 +381,9 @@ class LimeTraderClientTest {
     Mockito.when(response.statusCode()).thenReturn(200);
     String responseBody = "responseBody";
     Mockito.when(response.body()).thenReturn(responseBody);
-    AccountTransactionList expected = new AccountTransactionList(
-        List.of(buildAccountTransactionSample()), 1);
-    Mockito.when(clientWithMocks.jsonMapper.readValue(
-            responseBody,
-            AccountTransactionList.class))
+    AccountTransactionList expected =
+        new AccountTransactionList(List.of(buildAccountTransactionSample()), 1);
+    Mockito.when(clientWithMocks.jsonMapper.readValue(responseBody, AccountTransactionList.class))
         .thenReturn(expected);
 
     Assertions.assertEquals(expected, clientWithMocks.client.getAccountTransactions(query));
@@ -417,16 +395,9 @@ class LimeTraderClientTest {
         "type",
         "description",
         LocalDate.now(),
-        new Asset(
-            "symbol",
-            "symbolDescription",
-            1,
-            BigDecimal.ONE),
-        new Cash(
-            BigDecimal.ONE,
-            BigDecimal.ONE),
-        List.of(
-            new Fee("name", BigDecimal.ONE)),
+        new Asset("symbol", "symbolDescription", 1, BigDecimal.ONE),
+        new Cash(BigDecimal.ONE, BigDecimal.ONE),
+        List.of(new Fee("name", BigDecimal.ONE)),
         "status");
   }
 
@@ -462,9 +433,7 @@ class LimeTraderClientTest {
     String responseBody = "responseBody";
     Mockito.when(response.body()).thenReturn(responseBody);
     OrderPlacementResult expected = new OrderPlacementResult(true, "data");
-    Mockito.when(clientWithMocks.jsonMapper.readValue(
-            responseBody,
-            OrderPlacementResult.class))
+    Mockito.when(clientWithMocks.jsonMapper.readValue(responseBody, OrderPlacementResult.class))
         .thenReturn(expected);
 
     Assertions.assertEquals(expected, clientWithMocks.client.placeOrder(info));
@@ -501,11 +470,8 @@ class LimeTraderClientTest {
     Mockito.when(response.statusCode()).thenReturn(200);
     String responseBody = "responseBody";
     Mockito.when(response.body()).thenReturn(responseBody);
-    OrderValidationResult expected =
-        new OrderValidationResult(true, "validationMessage");
-    Mockito.when(clientWithMocks.jsonMapper.readValue(
-            responseBody,
-            OrderValidationResult.class))
+    OrderValidationResult expected = new OrderValidationResult(true, "validationMessage");
+    Mockito.when(clientWithMocks.jsonMapper.readValue(responseBody, OrderValidationResult.class))
         .thenReturn(expected);
 
     Assertions.assertEquals(expected, clientWithMocks.client.validateOrder(info));
@@ -517,9 +483,8 @@ class LimeTraderClientTest {
     ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
     Authentication auth = mockSuccessfulAuth(clientWithMocks);
     String orderId = "orderId";
-    URI uri = URI.create(String.format(
-        orderUrlPattern,
-        URLEncoder.encode(orderId, StandardCharsets.UTF_8)));
+    URI uri = URI.create(
+        String.format(orderUrlPattern, URLEncoder.encode(orderId, StandardCharsets.UTF_8)));
     HttpRequest request = HttpRequest.newBuilder()
         .uri(uri)
         .header("accept", "application/json")
@@ -533,9 +498,7 @@ class LimeTraderClientTest {
     String responseBody = "responseBody";
     Mockito.when(response.body()).thenReturn(responseBody);
     Order expected = buildOrderSample();
-    Mockito.when(clientWithMocks.jsonMapper.readValue(
-            responseBody,
-            Order.class))
+    Mockito.when(clientWithMocks.jsonMapper.readValue(responseBody, Order.class))
         .thenReturn(expected);
 
     Assertions.assertEquals(expected, clientWithMocks.client.getOrder(orderId));
@@ -565,9 +528,8 @@ class LimeTraderClientTest {
     ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
     Authentication auth = mockSuccessfulAuth(clientWithMocks);
     String orderId = "orderId";
-    URI uri = URI.create(String.format(
-        orderUrlPattern,
-        URLEncoder.encode(orderId, StandardCharsets.UTF_8)));
+    URI uri = URI.create(
+        String.format(orderUrlPattern, URLEncoder.encode(orderId, StandardCharsets.UTF_8)));
     HttpRequest request = HttpRequest.newBuilder()
         .uri(uri)
         .header("accept", "application/json")
@@ -579,8 +541,8 @@ class LimeTraderClientTest {
         .thenReturn(response);
     Mockito.when(response.statusCode()).thenReturn(404);
 
-    Assertions.assertThrows(NotFoundException.class,
-        () -> clientWithMocks.client.getOrder(orderId));
+    Assertions.assertThrows(
+        NotFoundException.class, () -> clientWithMocks.client.getOrder(orderId));
   }
 
   @Test
@@ -592,9 +554,8 @@ class LimeTraderClientTest {
     OrderCancellationInfo info = new OrderCancellationInfo("message");
     String requestBody = "requestBody";
     Mockito.when(clientWithMocks.jsonMapper.writeValueAsString(info)).thenReturn(requestBody);
-    URI uri = URI.create(String.format(
-        cancelOrderUrlPattern,
-        URLEncoder.encode(orderId, StandardCharsets.UTF_8)));
+    URI uri = URI.create(
+        String.format(cancelOrderUrlPattern, URLEncoder.encode(orderId, StandardCharsets.UTF_8)));
     HttpRequest request = HttpRequest.newBuilder()
         .uri(uri)
         .header("accept", "application/json")
@@ -609,9 +570,7 @@ class LimeTraderClientTest {
     String responseBody = "responseBody";
     Mockito.when(response.body()).thenReturn(responseBody);
     OrderCancellationResult expected = new OrderCancellationResult(true, "data");
-    Mockito.when(clientWithMocks.jsonMapper.readValue(
-            responseBody,
-            OrderCancellationResult.class))
+    Mockito.when(clientWithMocks.jsonMapper.readValue(responseBody, OrderCancellationResult.class))
         .thenReturn(expected);
 
     Assertions.assertEquals(expected, clientWithMocks.client.cancelOrder(orderId, info));
@@ -626,9 +585,8 @@ class LimeTraderClientTest {
     OrderCancellationInfo info = new OrderCancellationInfo("message");
     String requestBody = "requestBody";
     Mockito.when(clientWithMocks.jsonMapper.writeValueAsString(info)).thenReturn(requestBody);
-    URI uri = URI.create(String.format(
-        cancelOrderUrlPattern,
-        URLEncoder.encode(orderId, StandardCharsets.UTF_8)));
+    URI uri = URI.create(
+        String.format(cancelOrderUrlPattern, URLEncoder.encode(orderId, StandardCharsets.UTF_8)));
     HttpRequest request = HttpRequest.newBuilder()
         .uri(uri)
         .header("accept", "application/json")
@@ -641,8 +599,8 @@ class LimeTraderClientTest {
         .thenReturn(response);
     Mockito.when(response.statusCode()).thenReturn(404);
 
-    Assertions.assertThrows(NotFoundException.class,
-        () -> clientWithMocks.client.cancelOrder(orderId, info));
+    Assertions.assertThrows(
+        NotFoundException.class, () -> clientWithMocks.client.cancelOrder(orderId, info));
   }
 
   @Test
@@ -650,12 +608,8 @@ class LimeTraderClientTest {
   void shouldGetOrderFeeCharges() throws Exception {
     ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
     Authentication auth = mockSuccessfulAuth(clientWithMocks);
-    OrderFeeChargeQuery query = new OrderFeeChargeQuery(
-        "accountNumber",
-        "symbol",
-        1,
-        "side",
-        BigDecimal.ONE);
+    OrderFeeChargeQuery query =
+        new OrderFeeChargeQuery("accountNumber", "symbol", 1, "side", BigDecimal.ONE);
     String requestBody = "requestBody";
     Mockito.when(clientWithMocks.jsonMapper.writeValueAsString(query)).thenReturn(requestBody);
     HttpRequest request = HttpRequest.newBuilder()
@@ -701,9 +655,7 @@ class LimeTraderClientTest {
     String responseBody = "responseBody";
     Mockito.when(response.body()).thenReturn(responseBody);
     Quote expected = buildQuoteSample();
-    Mockito.when(clientWithMocks.jsonMapper.readValue(
-            responseBody,
-            Quote.class))
+    Mockito.when(clientWithMocks.jsonMapper.readValue(responseBody, Quote.class))
         .thenReturn(expected);
 
     Assertions.assertEquals(expected, clientWithMocks.client.getQuote(symbol));
@@ -755,8 +707,7 @@ class LimeTraderClientTest {
         .thenReturn(response);
     Mockito.when(response.statusCode()).thenReturn(404);
 
-    Assertions.assertThrows(NotFoundException.class,
-        () -> clientWithMocks.client.getQuote(symbol));
+    Assertions.assertThrows(NotFoundException.class, () -> clientWithMocks.client.getQuote(symbol));
   }
 
   @Test
@@ -783,8 +734,7 @@ class LimeTraderClientTest {
     List<Quote> expected = List.of(buildQuoteSample());
     Mockito.when(clientWithMocks.jsonMapper.readValue(
             responseBody,
-            TypeFactory.defaultInstance()
-                .constructCollectionType(List.class, Quote.class)))
+            TypeFactory.defaultInstance().constructCollectionType(List.class, Quote.class)))
         .thenReturn(expected);
 
     Assertions.assertEquals(expected, clientWithMocks.client.getQuotes(symbols));
@@ -828,8 +778,7 @@ class LimeTraderClientTest {
         1));
     Mockito.when(clientWithMocks.jsonMapper.readValue(
             responseBody,
-            TypeFactory.defaultInstance()
-                .constructCollectionType(List.class, Candle.class)))
+            TypeFactory.defaultInstance().constructCollectionType(List.class, Candle.class)))
         .thenReturn(expected);
 
     Assertions.assertEquals(expected, clientWithMocks.client.getQuoteHistory(query));
@@ -853,9 +802,7 @@ class LimeTraderClientTest {
     String responseBody = "responseBody";
     Mockito.when(response.body()).thenReturn(responseBody);
     TradingSchedule expected = new TradingSchedule("session");
-    Mockito.when(clientWithMocks.jsonMapper.readValue(
-            responseBody,
-            TradingSchedule.class))
+    Mockito.when(clientWithMocks.jsonMapper.readValue(responseBody, TradingSchedule.class))
         .thenReturn(expected);
 
     Assertions.assertEquals(expected, clientWithMocks.client.getTradingSchedule());
@@ -883,12 +830,8 @@ class LimeTraderClientTest {
     Mockito.when(response.statusCode()).thenReturn(200);
     String responseBody = "responseBody";
     Mockito.when(response.body()).thenReturn(responseBody);
-    SecurityList expected = new SecurityList(List.of(
-        new Security("symbol", "description")),
-        1);
-    Mockito.when(clientWithMocks.jsonMapper.readValue(
-            responseBody,
-            SecurityList.class))
+    SecurityList expected = new SecurityList(List.of(new Security("symbol", "description")), 1);
+    Mockito.when(clientWithMocks.jsonMapper.readValue(responseBody, SecurityList.class))
         .thenReturn(expected);
 
     Assertions.assertEquals(expected, clientWithMocks.client.getSecurities(query));
@@ -900,9 +843,8 @@ class LimeTraderClientTest {
     ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
     Authentication auth = mockSuccessfulAuth(clientWithMocks);
     String symbol = "symbol";
-    URI uri = URI.create(String.format(
-        optionSeriesUrlPattern,
-        URLEncoder.encode(symbol, StandardCharsets.UTF_8)));
+    URI uri = URI.create(
+        String.format(optionSeriesUrlPattern, URLEncoder.encode(symbol, StandardCharsets.UTF_8)));
     HttpRequest request = HttpRequest.newBuilder()
         .uri(uri)
         .header("accept", "application/json")
@@ -918,8 +860,7 @@ class LimeTraderClientTest {
     List<String> expected = List.of("series");
     Mockito.when(clientWithMocks.jsonMapper.readValue(
             responseBody,
-            TypeFactory.defaultInstance()
-                .constructCollectionType(List.class, String.class)))
+            TypeFactory.defaultInstance().constructCollectionType(List.class, String.class)))
         .thenReturn(expected);
 
     Assertions.assertEquals(expected, clientWithMocks.client.getOptionSeries(symbol));
@@ -933,9 +874,9 @@ class LimeTraderClientTest {
     OptionExpirationQuery query = new OptionExpirationQuery("symbol", "series");
     Map<String, String> requestParams = new TreeMap<>();
     requestParams.put("series", query.series());
-    URI uri = buildUri(String.format(
-            optionExpirationUrlPattern,
-            URLEncoder.encode(query.symbol(), StandardCharsets.UTF_8)),
+    URI uri = buildUri(
+        String.format(
+            optionExpirationUrlPattern, URLEncoder.encode(query.symbol(), StandardCharsets.UTF_8)),
         requestParams);
     HttpRequest request = HttpRequest.newBuilder()
         .uri(uri)
@@ -952,8 +893,7 @@ class LimeTraderClientTest {
     List<LocalDate> expected = List.of(LocalDate.now());
     Mockito.when(clientWithMocks.jsonMapper.readValue(
             responseBody,
-            TypeFactory.defaultInstance()
-                .constructCollectionType(List.class, LocalDate.class)))
+            TypeFactory.defaultInstance().constructCollectionType(List.class, LocalDate.class)))
         .thenReturn(expected);
 
     Assertions.assertEquals(expected, clientWithMocks.client.getOptionExpirations(query));
@@ -968,9 +908,8 @@ class LimeTraderClientTest {
     Map<String, String> requestParams = new TreeMap<>();
     requestParams.put("expiration", DateTimeFormatter.ISO_DATE.format(query.expiration()));
     requestParams.put("series", query.series());
-    URI uri = buildUri(String.format(
-            optionsUrlPattern,
-            URLEncoder.encode(query.symbol(), StandardCharsets.UTF_8)),
+    URI uri = buildUri(
+        String.format(optionsUrlPattern, URLEncoder.encode(query.symbol(), StandardCharsets.UTF_8)),
         requestParams);
     HttpRequest request = HttpRequest.newBuilder()
         .uri(uri)
@@ -987,8 +926,7 @@ class LimeTraderClientTest {
     List<Option> expected = List.of(new Option("symbol", "type", BigDecimal.ONE));
     Mockito.when(clientWithMocks.jsonMapper.readValue(
             responseBody,
-            TypeFactory.defaultInstance()
-                .constructCollectionType(List.class, Option.class)))
+            TypeFactory.defaultInstance().constructCollectionType(List.class, Option.class)))
         .thenReturn(expected);
 
     Assertions.assertEquals(expected, clientWithMocks.client.getOptions(query));
@@ -1001,7 +939,7 @@ class LimeTraderClientTest {
         Mockito.mock(AccountBalanceChangedEventSubscriber.class);
     AccountTextSubscriber textSubscriber = Mockito.mock(AccountTextSubscriber.class);
     Mockito.when(clientWithMocks.accountWebSocket.getTextSubscriber(AccountTextSubscriber.class))
-            .thenReturn(textSubscriber);
+        .thenReturn(textSubscriber);
 
     clientWithMocks.client.setSubscriber(eventSubscriber);
 
@@ -1053,8 +991,7 @@ class LimeTraderClientTest {
   @Test
   void shouldSetAccountErrorEventSubscriber() {
     ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
-    AccountErrorEventSubscriber eventSubscriber =
-        Mockito.mock(AccountErrorEventSubscriber.class);
+    AccountErrorEventSubscriber eventSubscriber = Mockito.mock(AccountErrorEventSubscriber.class);
     AccountTextSubscriber textSubscriber = Mockito.mock(AccountTextSubscriber.class);
     Mockito.when(clientWithMocks.accountWebSocket.getTextSubscriber(AccountTextSubscriber.class))
         .thenReturn(textSubscriber);
@@ -1067,10 +1004,10 @@ class LimeTraderClientTest {
   @Test
   void shouldSetTradeMadeEventSubscriber() {
     ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
-    TradeMadeEventSubscriber eventSubscriber =
-        Mockito.mock(TradeMadeEventSubscriber.class);
+    TradeMadeEventSubscriber eventSubscriber = Mockito.mock(TradeMadeEventSubscriber.class);
     MarketDataTextSubscriber textSubscriber = Mockito.mock(MarketDataTextSubscriber.class);
-    Mockito.when(clientWithMocks.marketDataWebSocket.getTextSubscriber(MarketDataTextSubscriber.class))
+    Mockito.when(
+            clientWithMocks.marketDataWebSocket.getTextSubscriber(MarketDataTextSubscriber.class))
         .thenReturn(textSubscriber);
 
     clientWithMocks.client.setSubscriber(eventSubscriber);
@@ -1081,10 +1018,10 @@ class LimeTraderClientTest {
   @Test
   void shouldSetQuoteChangedEventSubscriber() {
     ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
-    QuoteChangedEventSubscriber eventSubscriber =
-        Mockito.mock(QuoteChangedEventSubscriber.class);
+    QuoteChangedEventSubscriber eventSubscriber = Mockito.mock(QuoteChangedEventSubscriber.class);
     MarketDataTextSubscriber textSubscriber = Mockito.mock(MarketDataTextSubscriber.class);
-    Mockito.when(clientWithMocks.marketDataWebSocket.getTextSubscriber(MarketDataTextSubscriber.class))
+    Mockito.when(
+            clientWithMocks.marketDataWebSocket.getTextSubscriber(MarketDataTextSubscriber.class))
         .thenReturn(textSubscriber);
 
     clientWithMocks.client.setSubscriber(eventSubscriber);
@@ -1098,7 +1035,8 @@ class LimeTraderClientTest {
     MarketDataErrorEventSubscriber eventSubscriber =
         Mockito.mock(MarketDataErrorEventSubscriber.class);
     MarketDataTextSubscriber textSubscriber = Mockito.mock(MarketDataTextSubscriber.class);
-    Mockito.when(clientWithMocks.marketDataWebSocket.getTextSubscriber(MarketDataTextSubscriber.class))
+    Mockito.when(
+            clientWithMocks.marketDataWebSocket.getTextSubscriber(MarketDataTextSubscriber.class))
         .thenReturn(textSubscriber);
 
     clientWithMocks.client.setSubscriber(eventSubscriber);
@@ -1110,21 +1048,19 @@ class LimeTraderClientTest {
   void shouldSubscribeForAccountBalanceChangedEvents() throws Exception {
     ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
     String accountNumber = "accountNumber";
-    AccountSubscriptionAction action =
-        new AccountSubscriptionAction("action", accountNumber);
-    Mockito.when(clientWithMocks.accountSubscriptionActionFactory
-        .getAccountBalanceChangedEventAction(accountNumber, true))
-            .thenReturn(action);
+    AccountSubscriptionAction action = new AccountSubscriptionAction("action", accountNumber);
+    Mockito.when(
+            clientWithMocks.accountSubscriptionActionFactory.getAccountBalanceChangedEventAction(
+                accountNumber, true))
+        .thenReturn(action);
     String actionString = "action";
-    Mockito.when(clientWithMocks.jsonMapper.writeValueAsString(action))
-            .thenReturn(actionString);
+    Mockito.when(clientWithMocks.jsonMapper.writeValueAsString(action)).thenReturn(actionString);
 
     clientWithMocks.client.subscribeForAccountBalanceChangedEvents(accountNumber);
 
     Mockito.verify(clientWithMocks.accountWebSocket)
-        .insertToStateIfAbsent(String.format(
-                ACCOUNT_BALANCE_CHANGED_EVENT_STATE_PROPERTY_PATTERN,
-                accountNumber),
+        .insertToStateIfAbsent(
+            String.format(ACCOUNT_BALANCE_CHANGED_EVENT_STATE_PROPERTY_PATTERN, accountNumber),
             actionString);
   }
 
@@ -1132,21 +1068,19 @@ class LimeTraderClientTest {
   void shouldUnsubscribeFromAccountBalanceChangedEvents() throws Exception {
     ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
     String accountNumber = "accountNumber";
-    AccountSubscriptionAction action =
-        new AccountSubscriptionAction("action", accountNumber);
-    Mockito.when(clientWithMocks.accountSubscriptionActionFactory
-            .getAccountBalanceChangedEventAction(accountNumber, false))
+    AccountSubscriptionAction action = new AccountSubscriptionAction("action", accountNumber);
+    Mockito.when(
+            clientWithMocks.accountSubscriptionActionFactory.getAccountBalanceChangedEventAction(
+                accountNumber, false))
         .thenReturn(action);
     String actionString = "action";
-    Mockito.when(clientWithMocks.jsonMapper.writeValueAsString(action))
-        .thenReturn(actionString);
+    Mockito.when(clientWithMocks.jsonMapper.writeValueAsString(action)).thenReturn(actionString);
 
     clientWithMocks.client.unsubscribeFromAccountBalanceChangedEvents(accountNumber);
 
     Mockito.verify(clientWithMocks.accountWebSocket)
-        .removeFromStateWith(String.format(
-                ACCOUNT_BALANCE_CHANGED_EVENT_STATE_PROPERTY_PATTERN,
-                accountNumber),
+        .removeFromStateWith(
+            String.format(ACCOUNT_BALANCE_CHANGED_EVENT_STATE_PROPERTY_PATTERN, accountNumber),
             actionString);
   }
 
@@ -1154,21 +1088,19 @@ class LimeTraderClientTest {
   void shouldSubscribeForAccountPositionsChangedEvents() throws Exception {
     ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
     String accountNumber = "accountNumber";
-    AccountSubscriptionAction action =
-        new AccountSubscriptionAction("action", accountNumber);
-    Mockito.when(clientWithMocks.accountSubscriptionActionFactory
-            .getAccountPositionsChangedEventAction(accountNumber, true))
+    AccountSubscriptionAction action = new AccountSubscriptionAction("action", accountNumber);
+    Mockito.when(
+            clientWithMocks.accountSubscriptionActionFactory.getAccountPositionsChangedEventAction(
+                accountNumber, true))
         .thenReturn(action);
     String actionString = "action";
-    Mockito.when(clientWithMocks.jsonMapper.writeValueAsString(action))
-        .thenReturn(actionString);
+    Mockito.when(clientWithMocks.jsonMapper.writeValueAsString(action)).thenReturn(actionString);
 
     clientWithMocks.client.subscribeForAccountPositionsChangedEvents(accountNumber);
 
     Mockito.verify(clientWithMocks.accountWebSocket)
-        .insertToStateIfAbsent(String.format(
-                ACCOUNT_POSITIONS_CHANGED_EVENT_STATE_PROPERTY_PATTERN,
-                accountNumber),
+        .insertToStateIfAbsent(
+            String.format(ACCOUNT_POSITIONS_CHANGED_EVENT_STATE_PROPERTY_PATTERN, accountNumber),
             actionString);
   }
 
@@ -1176,21 +1108,19 @@ class LimeTraderClientTest {
   void shouldUnsubscribeFromAccountPositionsChangedEvents() throws Exception {
     ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
     String accountNumber = "accountNumber";
-    AccountSubscriptionAction action =
-        new AccountSubscriptionAction("action", accountNumber);
-    Mockito.when(clientWithMocks.accountSubscriptionActionFactory
-            .getAccountPositionsChangedEventAction(accountNumber, false))
+    AccountSubscriptionAction action = new AccountSubscriptionAction("action", accountNumber);
+    Mockito.when(
+            clientWithMocks.accountSubscriptionActionFactory.getAccountPositionsChangedEventAction(
+                accountNumber, false))
         .thenReturn(action);
     String actionString = "action";
-    Mockito.when(clientWithMocks.jsonMapper.writeValueAsString(action))
-        .thenReturn(actionString);
+    Mockito.when(clientWithMocks.jsonMapper.writeValueAsString(action)).thenReturn(actionString);
 
     clientWithMocks.client.unsubscribeFromAccountPositionsChangedEvents(accountNumber);
 
     Mockito.verify(clientWithMocks.accountWebSocket)
-        .removeFromStateWith(String.format(
-                ACCOUNT_POSITIONS_CHANGED_EVENT_STATE_PROPERTY_PATTERN,
-                accountNumber),
+        .removeFromStateWith(
+            String.format(ACCOUNT_POSITIONS_CHANGED_EVENT_STATE_PROPERTY_PATTERN, accountNumber),
             actionString);
   }
 
@@ -1198,21 +1128,18 @@ class LimeTraderClientTest {
   void shouldSubscribeForAccountOrderChangedEvents() throws Exception {
     ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
     String accountNumber = "accountNumber";
-    AccountSubscriptionAction action =
-        new AccountSubscriptionAction("action", accountNumber);
-    Mockito.when(clientWithMocks.accountSubscriptionActionFactory
-            .getAccountOrderChangedEventAction(accountNumber, true))
+    AccountSubscriptionAction action = new AccountSubscriptionAction("action", accountNumber);
+    Mockito.when(clientWithMocks.accountSubscriptionActionFactory.getAccountOrderChangedEventAction(
+            accountNumber, true))
         .thenReturn(action);
     String actionString = "action";
-    Mockito.when(clientWithMocks.jsonMapper.writeValueAsString(action))
-        .thenReturn(actionString);
+    Mockito.when(clientWithMocks.jsonMapper.writeValueAsString(action)).thenReturn(actionString);
 
     clientWithMocks.client.subscribeForAccountOrderChangedEvents(accountNumber);
 
     Mockito.verify(clientWithMocks.accountWebSocket)
-        .insertToStateIfAbsent(String.format(
-                ACCOUNT_ORDER_CHANGED_EVENT_STATE_PROPERTY_PATTERN,
-                accountNumber),
+        .insertToStateIfAbsent(
+            String.format(ACCOUNT_ORDER_CHANGED_EVENT_STATE_PROPERTY_PATTERN, accountNumber),
             actionString);
   }
 
@@ -1220,21 +1147,18 @@ class LimeTraderClientTest {
   void shouldUnsubscribeFromAccountOrderChangedEvents() throws Exception {
     ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
     String accountNumber = "accountNumber";
-    AccountSubscriptionAction action =
-        new AccountSubscriptionAction("action", accountNumber);
-    Mockito.when(clientWithMocks.accountSubscriptionActionFactory
-            .getAccountOrderChangedEventAction(accountNumber, false))
+    AccountSubscriptionAction action = new AccountSubscriptionAction("action", accountNumber);
+    Mockito.when(clientWithMocks.accountSubscriptionActionFactory.getAccountOrderChangedEventAction(
+            accountNumber, false))
         .thenReturn(action);
     String actionString = "action";
-    Mockito.when(clientWithMocks.jsonMapper.writeValueAsString(action))
-        .thenReturn(actionString);
+    Mockito.when(clientWithMocks.jsonMapper.writeValueAsString(action)).thenReturn(actionString);
 
     clientWithMocks.client.unsubscribeFromAccountOrderChangedEvents(accountNumber);
 
     Mockito.verify(clientWithMocks.accountWebSocket)
-        .removeFromStateWith(String.format(
-                ACCOUNT_ORDER_CHANGED_EVENT_STATE_PROPERTY_PATTERN,
-                accountNumber),
+        .removeFromStateWith(
+            String.format(ACCOUNT_ORDER_CHANGED_EVENT_STATE_PROPERTY_PATTERN, accountNumber),
             actionString);
   }
 
@@ -1242,21 +1166,18 @@ class LimeTraderClientTest {
   void shouldSubscribeForAccountTradeChangedEvents() throws Exception {
     ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
     String accountNumber = "accountNumber";
-    AccountSubscriptionAction action =
-        new AccountSubscriptionAction("action", accountNumber);
-    Mockito.when(clientWithMocks.accountSubscriptionActionFactory
-            .getAccountTradeChangedEventAction(accountNumber, true))
+    AccountSubscriptionAction action = new AccountSubscriptionAction("action", accountNumber);
+    Mockito.when(clientWithMocks.accountSubscriptionActionFactory.getAccountTradeChangedEventAction(
+            accountNumber, true))
         .thenReturn(action);
     String actionString = "action";
-    Mockito.when(clientWithMocks.jsonMapper.writeValueAsString(action))
-        .thenReturn(actionString);
+    Mockito.when(clientWithMocks.jsonMapper.writeValueAsString(action)).thenReturn(actionString);
 
     clientWithMocks.client.subscribeForAccountTradeChangedEvents(accountNumber);
 
     Mockito.verify(clientWithMocks.accountWebSocket)
-        .insertToStateIfAbsent(String.format(
-                ACCOUNT_TRADE_CHANGED_EVENT_STATE_PROPERTY_PATTERN,
-                accountNumber),
+        .insertToStateIfAbsent(
+            String.format(ACCOUNT_TRADE_CHANGED_EVENT_STATE_PROPERTY_PATTERN, accountNumber),
             actionString);
   }
 
@@ -1264,21 +1185,18 @@ class LimeTraderClientTest {
   void shouldUnsubscribeFromAccountTradeChangedEvents() throws Exception {
     ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
     String accountNumber = "accountNumber";
-    AccountSubscriptionAction action =
-        new AccountSubscriptionAction("action", accountNumber);
-    Mockito.when(clientWithMocks.accountSubscriptionActionFactory
-            .getAccountTradeChangedEventAction(accountNumber, false))
+    AccountSubscriptionAction action = new AccountSubscriptionAction("action", accountNumber);
+    Mockito.when(clientWithMocks.accountSubscriptionActionFactory.getAccountTradeChangedEventAction(
+            accountNumber, false))
         .thenReturn(action);
     String actionString = "action";
-    Mockito.when(clientWithMocks.jsonMapper.writeValueAsString(action))
-        .thenReturn(actionString);
+    Mockito.when(clientWithMocks.jsonMapper.writeValueAsString(action)).thenReturn(actionString);
 
     clientWithMocks.client.unsubscribeFromAccountTradeChangedEvents(accountNumber);
 
     Mockito.verify(clientWithMocks.accountWebSocket)
-        .removeFromStateWith(String.format(
-                ACCOUNT_TRADE_CHANGED_EVENT_STATE_PROPERTY_PATTERN,
-                accountNumber),
+        .removeFromStateWith(
+            String.format(ACCOUNT_TRADE_CHANGED_EVENT_STATE_PROPERTY_PATTERN, accountNumber),
             actionString);
   }
 
@@ -1287,14 +1205,11 @@ class LimeTraderClientTest {
   void shouldSubscribeForMarketDataEvents() throws Exception {
     ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
     Set<String> symbols = Set.of("a", "b", "c", "d");
-    MarketDataSubscriptionAction action =
-        new MarketDataSubscriptionAction("action", symbols);
-    Mockito.when(clientWithMocks.marketDataSubscriptionActionFactory
-            .getAction(symbols, true))
+    MarketDataSubscriptionAction action = new MarketDataSubscriptionAction("action", symbols);
+    Mockito.when(clientWithMocks.marketDataSubscriptionActionFactory.getAction(symbols, true))
         .thenReturn(action);
     String actionString = "action";
-    Mockito.when(clientWithMocks.jsonMapper.writeValueAsString(action))
-        .thenReturn(actionString);
+    Mockito.when(clientWithMocks.jsonMapper.writeValueAsString(action)).thenReturn(actionString);
 
     clientWithMocks.client.subscribeForMarketDataEvents(symbols);
 
@@ -1314,7 +1229,7 @@ class LimeTraderClientTest {
     MarketDataSubscriptionAction oldAction =
         new MarketDataSubscriptionAction("action", Set.of("a", "b"));
     Mockito.when(clientWithMocks.jsonMapper.readValue(oldData, MarketDataSubscriptionAction.class))
-            .thenReturn(oldAction);
+        .thenReturn(oldAction);
     Assertions.assertNull(stateTransitionDataFunction.apply(oldData));
 
     oldAction = new MarketDataSubscriptionAction("action", Set.of("a", "b", "e", "f"));
@@ -1322,14 +1237,14 @@ class LimeTraderClientTest {
         .thenReturn(oldAction);
     MarketDataSubscriptionAction actionForStateTransition =
         new MarketDataSubscriptionAction("action", Set.of());
-    Mockito.when(clientWithMocks.marketDataSubscriptionActionFactory.getAction(Set.of("e", "f"), false))
-            .thenReturn(actionForStateTransition);
+    Mockito.when(
+            clientWithMocks.marketDataSubscriptionActionFactory.getAction(Set.of("e", "f"), false))
+        .thenReturn(actionForStateTransition);
     String actionForStateTransitionString = "actionForStateTransition";
     Mockito.when(clientWithMocks.jsonMapper.writeValueAsString(actionForStateTransition))
-            .thenReturn(actionForStateTransitionString);
+        .thenReturn(actionForStateTransitionString);
     Assertions.assertEquals(
-        actionForStateTransitionString,
-        stateTransitionDataFunction.apply(oldData));
+        actionForStateTransitionString, stateTransitionDataFunction.apply(oldData));
   }
 
   @Test
@@ -1358,15 +1273,14 @@ class LimeTraderClientTest {
         .thenReturn(oldAction);
     MarketDataSubscriptionAction actionForStateTransition =
         new MarketDataSubscriptionAction("action", Set.of());
-    Mockito.when(clientWithMocks.marketDataSubscriptionActionFactory
-            .getAction(oldAction.symbols(), false))
+    Mockito.when(clientWithMocks.marketDataSubscriptionActionFactory.getAction(
+            oldAction.symbols(), false))
         .thenReturn(actionForStateTransition);
     String actionForStateTransitionString = "actionForStateTransition";
     Mockito.when(clientWithMocks.jsonMapper.writeValueAsString(actionForStateTransition))
         .thenReturn(actionForStateTransitionString);
     Assertions.assertEquals(
-        actionForStateTransitionString,
-        stateTransitionDataFunction.apply(oldData));
+        actionForStateTransitionString, stateTransitionDataFunction.apply(oldData));
   }
 
   @Test
@@ -1375,8 +1289,7 @@ class LimeTraderClientTest {
 
     clientWithMocks.client.close();
     Assertions.assertThrows(
-        IllegalLimeTraderClientStateException.class,
-        clientWithMocks.client::getAccountBalances);
+        IllegalLimeTraderClientStateException.class, clientWithMocks.client::getAccountBalances);
 
     Mockito.verify(clientWithMocks.accountWebSocket).close();
     Mockito.verify(clientWithMocks.marketDataWebSocket).close();
@@ -1420,8 +1333,7 @@ class LimeTraderClientTest {
   }
 
   private static String createUrlEncodedForm(Map<String, String> form) {
-    return form.entrySet()
-        .stream()
+    return form.entrySet().stream()
         .map(e -> URLEncoder.encode(e.getKey(), StandardCharsets.UTF_8)
             + "="
             + URLEncoder.encode(e.getValue(), StandardCharsets.UTF_8))
@@ -1447,30 +1359,28 @@ class LimeTraderClientTest {
   }
 
   private ClientWithMocks buildClientWithMocksAndInitUrls() {
-    try (
-        MockedStatic<JsonMapper> jsonMapperMockedStatic = Mockito.mockStatic(JsonMapper.class);
+    try (MockedStatic<JsonMapper> jsonMapperMockedStatic = Mockito.mockStatic(JsonMapper.class);
         MockedStatic<Clock> clockMockedStatic = Mockito.mockStatic(Clock.class);
-        MockedConstruction<AccountSubscriptionActionFactory> accountSubscriptionActionFactoryMockedConstruction =
-            Mockito.mockConstruction(AccountSubscriptionActionFactory.class);
-        MockedConstruction<MarketDataSubscriptionActionFactory> marketDataSubscriptionActionFactoryMockedConstruction =
-            Mockito.mockConstruction(MarketDataSubscriptionActionFactory.class);
+        MockedConstruction<AccountSubscriptionActionFactory>
+            accountSubscriptionActionFactoryMockedConstruction =
+                Mockito.mockConstruction(AccountSubscriptionActionFactory.class);
+        MockedConstruction<MarketDataSubscriptionActionFactory>
+            marketDataSubscriptionActionFactoryMockedConstruction =
+                Mockito.mockConstruction(MarketDataSubscriptionActionFactory.class);
         MockedConstruction<ResilientWebSocket> resilientWebSocketMockedConstruction =
             Mockito.mockConstruction(ResilientWebSocket.class)) {
       HttpClient httpClient = Mockito.mock(HttpClient.class);
-      ClientConfig clientConfig =
-          new ClientConfig(httpClient, null, null, null);
+      ClientConfig clientConfig = new ClientConfig(httpClient, null, null, null);
       Builder jsonMapperBuilder = Mockito.mock(Builder.class);
       JsonMapper jsonMapper = Mockito.mock(JsonMapper.class);
-      jsonMapperMockedStatic.when(JsonMapper::builder)
-          .thenReturn(jsonMapperBuilder);
-      Mockito.when(jsonMapperBuilder.addModule(Mockito.any()))
-          .thenReturn(jsonMapperBuilder);
-      Mockito.when(jsonMapperBuilder.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false))
+      jsonMapperMockedStatic.when(JsonMapper::builder).thenReturn(jsonMapperBuilder);
+      Mockito.when(jsonMapperBuilder.addModule(Mockito.any())).thenReturn(jsonMapperBuilder);
+      Mockito.when(
+              jsonMapperBuilder.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false))
           .thenReturn(jsonMapperBuilder);
       Mockito.when(jsonMapperBuilder.propertyNamingStrategy(Mockito.any()))
           .thenReturn(jsonMapperBuilder);
-      Mockito.when(jsonMapperBuilder.build())
-          .thenReturn(jsonMapper);
+      Mockito.when(jsonMapperBuilder.build()).thenReturn(jsonMapper);
       InstantSource instantSource = Mockito.mock(Clock.class);
       clockMockedStatic.when(Clock::systemDefaultZone).thenReturn(instantSource);
       LimeTraderClient client = new LimeTraderClient(clientConfig, credentials);
@@ -1488,11 +1398,11 @@ class LimeTraderClientTest {
   }
 
   private void initUrls(ClientConfig clientConfig) {
-    this.baseHttpAuthUrl = Objects.requireNonNullElse(
-        clientConfig.baseHttpAuthUrl(), DEFAULT_BASE_HTTP_AUTH_URL);
+    this.baseHttpAuthUrl =
+        Objects.requireNonNullElse(clientConfig.baseHttpAuthUrl(), DEFAULT_BASE_HTTP_AUTH_URL);
     this.tokenUrl = this.baseHttpAuthUrl + "/connect/token";
-    this.baseHttpApiUrl = Objects.requireNonNullElse(
-        clientConfig.baseHttpApiUrl(), DEFAULT_BASE_HTTP_API_URL);
+    this.baseHttpApiUrl =
+        Objects.requireNonNullElse(clientConfig.baseHttpApiUrl(), DEFAULT_BASE_HTTP_API_URL);
     this.accountsUrl = this.baseHttpApiUrl + "/accounts";
     this.accountPositionsUrlPattern = this.accountsUrl + "/%s/positions";
     this.accountTradesUrlPattern = this.accountsUrl + "/%s/trades/%s";
@@ -1514,8 +1424,8 @@ class LimeTraderClientTest {
     this.optionsUrlPattern = this.securitiesUrl + "/%s/options";
     this.optionSeriesUrlPattern = this.optionsUrlPattern + "/series";
     this.optionExpirationUrlPattern = this.optionsUrlPattern + "/expirations";
-    this.baseWsApiUrl = Objects.requireNonNullElse(
-        clientConfig.baseWsApiUrl(), DEFAULT_BASE_WS_API_URL);
+    this.baseWsApiUrl =
+        Objects.requireNonNullElse(clientConfig.baseWsApiUrl(), DEFAULT_BASE_WS_API_URL);
     this.accountWsUrl = this.baseWsApiUrl + "/accounts";
     this.marketDataWsUrl = this.baseWsApiUrl + "/marketdata";
   }
@@ -1528,8 +1438,5 @@ class LimeTraderClientTest {
       AccountSubscriptionActionFactory accountSubscriptionActionFactory,
       ResilientWebSocket accountWebSocket,
       MarketDataSubscriptionActionFactory marketDataSubscriptionActionFactory,
-      ResilientWebSocket marketDataWebSocket) {
-
-  }
-
+      ResilientWebSocket marketDataWebSocket) {}
 }

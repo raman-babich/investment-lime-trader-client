@@ -33,6 +33,5 @@ public final class OrderStatus {
   public static final String DONE_FOR_DAY = "done_for_day";
   public static final String EXPIRED = "expired";
 
-  private OrderStatus() {
-  }
+  private OrderStatus() {}
 }

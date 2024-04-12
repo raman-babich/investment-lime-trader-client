@@ -23,9 +23,7 @@ import java.util.List;
 /**
  * @author Raman Babich
  */
-public record AccountTradeList(
-    List<Trade> trades,
-    Integer count) {
+public record AccountTradeList(List<Trade> trades, Integer count) {
 
   public record Trade(
       String symbol,
@@ -33,8 +31,5 @@ public record AccountTradeList(
       Integer quantity,
       BigDecimal price,
       BigDecimal amount,
-      String side) {
-
-  }
-
+      String side) {}
 }

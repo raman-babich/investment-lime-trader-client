@@ -19,7 +19,4 @@ package com.ramanbabich.investment.limetraderclient.order.model;
 /**
  * @author Raman Babich
  */
-public record OrderCancellationInfo(
-    String message) {
-
-}
+public record OrderCancellationInfo(String message) {}

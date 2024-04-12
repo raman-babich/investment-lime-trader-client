@@ -25,6 +25,5 @@ public final class ErrorCode {
   public static final String VALIDATION_ERROR = "validation_error";
   public static final String API_ERROR = "api_error";
 
-  private ErrorCode() {
-  }
+  private ErrorCode() {}
 }

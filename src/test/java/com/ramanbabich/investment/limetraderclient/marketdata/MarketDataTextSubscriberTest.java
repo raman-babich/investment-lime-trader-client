@@ -54,11 +54,9 @@ class MarketDataTextSubscriberTest {
     Map<String, Object> parsedData = buildParsedDataSample(QUOTE_CHANGED_DATA_TYPE);
     Mockito.when(jsonMapper.readValue(
             text,
-            TypeFactory.defaultInstance()
-                .constructMapType(Map.class, String.class, Object.class)))
+            TypeFactory.defaultInstance().constructMapType(Map.class, String.class, Object.class)))
         .thenReturn(parsedData);
-    Mockito.when(jsonMapper.convertValue(parsedData, QuoteChangedEvent.class))
-        .thenReturn(expected);
+    Mockito.when(jsonMapper.convertValue(parsedData, QuoteChangedEvent.class)).thenReturn(expected);
 
     textSubscriber.onText(text);
 
@@ -103,11 +101,9 @@ class MarketDataTextSubscriberTest {
     Map<String, Object> parsedData = buildParsedDataSample(TRADE_MADE_DATA_TYPE);
     Mockito.when(jsonMapper.readValue(
             text,
-            TypeFactory.defaultInstance()
-                .constructMapType(Map.class, String.class, Object.class)))
+            TypeFactory.defaultInstance().constructMapType(Map.class, String.class, Object.class)))
         .thenReturn(parsedData);
-    Mockito.when(jsonMapper.convertValue(parsedData, TradeMadeEvent.class))
-        .thenReturn(expected);
+    Mockito.when(jsonMapper.convertValue(parsedData, TradeMadeEvent.class)).thenReturn(expected);
 
     textSubscriber.onText(text);
 
@@ -115,12 +111,7 @@ class MarketDataTextSubscriberTest {
   }
 
   private static TradeMadeEvent buildTradeMadeEventSample() {
-    return new TradeMadeEvent(
-        "symbol",
-        1,
-        "lastMarket",
-        BigDecimal.ONE,
-        Instant.ofEpochMilli(0));
+    return new TradeMadeEvent("symbol", 1, "lastMarket", BigDecimal.ONE, Instant.ofEpochMilli(0));
   }
 
   @Test
@@ -132,8 +123,7 @@ class MarketDataTextSubscriberTest {
     Map<String, Object> parsedData = buildParsedDataSample(ERROR_DATA_TYPE);
     Mockito.when(jsonMapper.readValue(
             text,
-            TypeFactory.defaultInstance()
-                .constructMapType(Map.class, String.class, Object.class)))
+            TypeFactory.defaultInstance().constructMapType(Map.class, String.class, Object.class)))
         .thenReturn(parsedData);
     Mockito.when(jsonMapper.convertValue(parsedData, MarketDataErrorEvent.class))
         .thenReturn(expected);
@@ -144,9 +134,7 @@ class MarketDataTextSubscriberTest {
   }
 
   private static MarketDataErrorEvent buildMarketDataErrorEventSample() {
-    return new MarketDataErrorEvent(
-        "code",
-        "description");
+    return new MarketDataErrorEvent("code", "description");
   }
 
   @Test
@@ -157,13 +145,9 @@ class MarketDataTextSubscriberTest {
     Map<String, Object> parsedData = buildParsedDataSample(QUOTE_CHANGED_DATA_TYPE);
     Mockito.when(jsonMapper.readValue(
             text,
-            TypeFactory.defaultInstance()
-                .constructMapType(Map.class, String.class, Object.class)))
+            TypeFactory.defaultInstance().constructMapType(Map.class, String.class, Object.class)))
         .thenReturn(parsedData);
-    Mockito.when(jsonMapper.convertValue(
-            parsedData,
-            QuoteChangedEvent.class))
-        .thenReturn(event);
+    Mockito.when(jsonMapper.convertValue(parsedData, QuoteChangedEvent.class)).thenReturn(event);
 
     textSubscriber.onText(text);
   }
@@ -174,8 +158,7 @@ class MarketDataTextSubscriberTest {
     Map<String, Object> parsedData = buildParsedDataSample("unknown");
     Mockito.when(jsonMapper.readValue(
             text,
-            TypeFactory.defaultInstance()
-                .constructMapType(Map.class, String.class, Object.class)))
+            TypeFactory.defaultInstance().constructMapType(Map.class, String.class, Object.class)))
         .thenReturn(parsedData);
 
     textSubscriber.onText(text);
@@ -187,17 +170,12 @@ class MarketDataTextSubscriberTest {
     Map<String, Object> parsedData = buildParsedDataSample(QUOTE_CHANGED_DATA_TYPE);
     Mockito.when(jsonMapper.readValue(
             text,
-            TypeFactory.defaultInstance()
-                .constructMapType(Map.class, String.class, Object.class)))
+            TypeFactory.defaultInstance().constructMapType(Map.class, String.class, Object.class)))
         .thenReturn(parsedData);
-    Mockito.when(jsonMapper.convertValue(
-            parsedData,
-            QuoteChangedEvent.class))
+    Mockito.when(jsonMapper.convertValue(parsedData, QuoteChangedEvent.class))
         .thenThrow(IllegalArgumentException.class);
 
-    Assertions.assertThrows(
-        DataProcessingFailedException.class,
-        () -> textSubscriber.onText(text));
+    Assertions.assertThrows(DataProcessingFailedException.class, () -> textSubscriber.onText(text));
   }
 
   @Test
@@ -205,13 +183,9 @@ class MarketDataTextSubscriberTest {
     String text = "text";
     Mockito.when(jsonMapper.readValue(
             text,
-            TypeFactory.defaultInstance()
-                .constructMapType(Map.class, String.class, Object.class)))
+            TypeFactory.defaultInstance().constructMapType(Map.class, String.class, Object.class)))
         .thenThrow(JsonProcessingException.class);
 
-    Assertions.assertThrows(
-        DataProcessingFailedException.class,
-        () -> textSubscriber.onText(text));
+    Assertions.assertThrows(DataProcessingFailedException.class, () -> textSubscriber.onText(text));
   }
-
 }

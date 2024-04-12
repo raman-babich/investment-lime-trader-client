@@ -36,6 +36,4 @@ public record AccountActiveOrder(
     String comment,
     Integer executeQuantity,
     BigDecimal executedPrice,
-    String orderStatus) {
-
-}
+    String orderStatus) {}

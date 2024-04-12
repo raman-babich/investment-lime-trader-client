@@ -22,9 +22,4 @@ import java.time.LocalDate;
  * @author Raman Babich
  */
 public record AccountTradeQuery(
-    String accountNumber,
-    LocalDate date,
-    Integer limit,
-    Integer skip) {
-
-}
+    String accountNumber, LocalDate date, Integer limit, Integer skip) {}

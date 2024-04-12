@@ -19,8 +19,4 @@ package com.ramanbabich.investment.limetraderclient.marketdata.model;
 /**
  * @author Raman Babich
  */
-public record MarketDataErrorEvent(
-    String code,
-    String description) {
-
-}
+public record MarketDataErrorEvent(String code, String description) {}

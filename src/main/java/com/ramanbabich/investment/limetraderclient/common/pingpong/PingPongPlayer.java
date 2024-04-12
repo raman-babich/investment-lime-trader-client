@@ -39,12 +39,15 @@ public class PingPongPlayer implements PongSubscriber, Runnable {
     this(id, pingSender, null, gameOverSubscriber);
   }
 
-  public PingPongPlayer(String id, PingSender pingSender, Long pingIntervalMillis,
+  public PingPongPlayer(
+      String id,
+      PingSender pingSender,
+      Long pingIntervalMillis,
       GameOverSubscriber gameOverSubscriber) {
     this.id = Objects.requireNonNull(id, "Id should be specified.");
     this.pingSender = Objects.requireNonNull(pingSender, "Ping sender should be specified.");
-    this.pingIntervalMillis = Objects.requireNonNullElse(
-        pingIntervalMillis, DEFAULT_PING_INTERVAL_MILLIS);
+    this.pingIntervalMillis =
+        Objects.requireNonNullElse(pingIntervalMillis, DEFAULT_PING_INTERVAL_MILLIS);
     if (this.pingIntervalMillis <= 0) {
       throw new IllegalArgumentException("Ping interval should be greater than zero.");
     }
@@ -68,11 +71,16 @@ public class PingPongPlayer implements PongSubscriber, Runnable {
       }
     } catch (Throwable throwable) {
       if (LOG.isDebugEnabled()) {
-        LOG.debug("Player '{}' realizes that ping pong game is over because of the error. "
-            + "Game over subscribers will be notified.", id, throwable);
+        LOG.debug(
+            "Player '{}' realizes that ping pong game is over because of the error. "
+                + "Game over subscribers will be notified.",
+            id,
+            throwable);
       } else {
-        LOG.info("Player '{}' realizes that ping pong game is over because of the error. "
-            + "Game over subscribers will be notified.", id);
+        LOG.info(
+            "Player '{}' realizes that ping pong game is over because of the error. "
+                + "Game over subscribers will be notified.",
+            id);
       }
       gameOverSubscriber.onGameOver(this);
     }

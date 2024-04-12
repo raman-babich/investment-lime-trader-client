@@ -19,7 +19,4 @@ package com.ramanbabich.investment.limetraderclient.marketdata.model;
 /**
  * @author Raman Babich
  */
-public record TradingSchedule(
-    String session) {
-
-}
+public record TradingSchedule(String session) {}

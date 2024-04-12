@@ -36,18 +36,13 @@ class ResilientWebSocketTest {
       Mockito.mock(WebSocketBuilderProvider.class);
 
   {
-    Mockito.doReturn(webSocketBuilder)
-        .when(webSocketBuilderProvider).provide();
+    Mockito.doReturn(webSocketBuilder).when(webSocketBuilderProvider).provide();
   }
 
   private final URI uri = URI.create("wss://localhost/websocket-api");
   private final TextSubscriber textSubscriber = Mockito.mock(TextSubscriber.class);
   private final ResilientWebSocket resilientWebSocket = new ResilientWebSocket(
-      "test-web-socket",
-      uri,
-      webSocketBuilderProvider,
-      Long.MAX_VALUE,
-      textSubscriber);
+      "test-web-socket", uri, webSocketBuilderProvider, Long.MAX_VALUE, textSubscriber);
 
   @Test
   @SuppressWarnings("unchecked")
@@ -58,27 +53,22 @@ class ResilientWebSocketTest {
     CompletableFuture<WebSocket> webSocketFuture =
         (CompletableFuture<WebSocket>) Mockito.mock(CompletableFuture.class);
     Mockito.doReturn(webSocketFuture)
-        .when(webSocketBuilder).buildAsync(Mockito.eq(uri), Mockito.any());
+        .when(webSocketBuilder)
+        .buildAsync(Mockito.eq(uri), Mockito.any());
     WebSocket webSocket = Mockito.mock(WebSocket.class);
-    Mockito.doReturn(webSocket)
-        .when(webSocketFuture).get(10, TimeUnit.SECONDS);
-    Mockito.doReturn(webSocketFuture)
-        .when(webSocket).sendPing(Mockito.any());
-    Mockito.doReturn(webSocketFuture)
-        .when(webSocket).sendText(dataToSubscribe, true);
+    Mockito.doReturn(webSocket).when(webSocketFuture).get(10, TimeUnit.SECONDS);
+    Mockito.doReturn(webSocketFuture).when(webSocket).sendPing(Mockito.any());
+    Mockito.doReturn(webSocketFuture).when(webSocket).sendText(dataToSubscribe, true);
 
     Assertions.assertTrue(resilientWebSocket.insertToStateIfAbsent(property, dataToSubscribe));
     Assertions.assertFalse(resilientWebSocket.insertToStateIfAbsent(property, dataToSubscribe));
     Assertions.assertEquals(dataToSubscribe, resilientWebSocket.getFromState(property));
-    Mockito.doReturn(webSocketFuture)
-        .when(webSocket).sendText(dataToUnsubscribe, true);
+    Mockito.doReturn(webSocketFuture).when(webSocket).sendText(dataToUnsubscribe, true);
     Assertions.assertEquals(
-        dataToSubscribe,
-        resilientWebSocket.removeFromStateWith(property, dataToUnsubscribe));
+        dataToSubscribe, resilientWebSocket.removeFromStateWith(property, dataToUnsubscribe));
     Assertions.assertNull(resilientWebSocket.getFromState(property));
 
-    Mockito.verify(webSocketFuture, Mockito.atLeast(3))
-        .get(10, TimeUnit.SECONDS);
+    Mockito.verify(webSocketFuture, Mockito.atLeast(3)).get(10, TimeUnit.SECONDS);
   }
 
   @Test
@@ -89,14 +79,12 @@ class ResilientWebSocketTest {
     CompletableFuture<WebSocket> webSocketFuture =
         (CompletableFuture<WebSocket>) Mockito.mock(CompletableFuture.class);
     Mockito.doReturn(webSocketFuture)
-        .when(webSocketBuilder).buildAsync(Mockito.eq(uri), Mockito.any());
+        .when(webSocketBuilder)
+        .buildAsync(Mockito.eq(uri), Mockito.any());
     WebSocket webSocket = Mockito.mock(WebSocket.class);
-    Mockito.doReturn(webSocket)
-        .when(webSocketFuture).get(10, TimeUnit.SECONDS);
-    Mockito.doReturn(webSocketFuture)
-        .when(webSocket).sendPing(Mockito.any());
-    Mockito.doReturn(webSocketFuture)
-        .when(webSocket).sendText(data, true);
+    Mockito.doReturn(webSocket).when(webSocketFuture).get(10, TimeUnit.SECONDS);
+    Mockito.doReturn(webSocketFuture).when(webSocket).sendPing(Mockito.any());
+    Mockito.doReturn(webSocketFuture).when(webSocket).sendText(data, true);
 
     Assertions.assertNull(resilientWebSocket.updateState(property, data, oldData -> {
       Assertions.assertNull(oldData);
@@ -109,10 +97,8 @@ class ResilientWebSocketTest {
     Assertions.assertEquals(data, resilientWebSocket.getFromState(property));
     String newData = "new-" + data;
     String transitionData = "transition-" + data;
-    Mockito.doReturn(webSocketFuture)
-        .when(webSocket).sendText(transitionData, true);
-    Mockito.doReturn(webSocketFuture)
-        .when(webSocket).sendText(newData, true);
+    Mockito.doReturn(webSocketFuture).when(webSocket).sendText(transitionData, true);
+    Mockito.doReturn(webSocketFuture).when(webSocket).sendText(newData, true);
     Assertions.assertEquals(data, resilientWebSocket.updateState(property, newData, oldData -> {
       Assertions.assertEquals(data, oldData);
       return transitionData;
@@ -124,8 +110,7 @@ class ResilientWebSocketTest {
     }));
     Assertions.assertNull(resilientWebSocket.getFromState(property));
 
-    Mockito.verify(webSocketFuture, Mockito.atLeast(5))
-        .get(10, TimeUnit.SECONDS);
+    Mockito.verify(webSocketFuture, Mockito.atLeast(5)).get(10, TimeUnit.SECONDS);
   }
 
   @Test
@@ -137,27 +122,22 @@ class ResilientWebSocketTest {
     CompletableFuture<WebSocket> webSocketFuture =
         (CompletableFuture<WebSocket>) Mockito.mock(CompletableFuture.class);
     Mockito.doReturn(webSocketFuture)
-        .when(webSocketBuilder).buildAsync(Mockito.eq(uri), Mockito.any());
+        .when(webSocketBuilder)
+        .buildAsync(Mockito.eq(uri), Mockito.any());
     WebSocket webSocket = Mockito.mock(WebSocket.class);
-    Mockito.doReturn(webSocket)
-        .when(webSocketFuture).get(10, TimeUnit.SECONDS);
-    Mockito.doReturn(webSocketFuture)
-        .when(webSocket).sendPing(Mockito.any());
-    Mockito.doReturn(webSocketFuture)
-        .when(webSocket).sendText(dataToSubscribe, true);
+    Mockito.doReturn(webSocket).when(webSocketFuture).get(10, TimeUnit.SECONDS);
+    Mockito.doReturn(webSocketFuture).when(webSocket).sendPing(Mockito.any());
+    Mockito.doReturn(webSocketFuture).when(webSocket).sendText(dataToSubscribe, true);
 
     Assertions.assertTrue(resilientWebSocket.insertToStateIfAbsent(property, dataToSubscribe));
     Assertions.assertFalse(resilientWebSocket.insertToStateIfAbsent(property, dataToSubscribe));
     Assertions.assertEquals(dataToSubscribe, resilientWebSocket.getFromState(property));
-    Mockito.doReturn(webSocketFuture)
-        .when(webSocket).sendText(dataToUnsubscribe, true);
+    Mockito.doReturn(webSocketFuture).when(webSocket).sendText(dataToUnsubscribe, true);
     Assertions.assertEquals(
-        dataToSubscribe,
-        resilientWebSocket.removeFromStateWith(property, dataToUnsubscribe));
+        dataToSubscribe, resilientWebSocket.removeFromStateWith(property, dataToUnsubscribe));
     Assertions.assertNull(resilientWebSocket.getFromState(property));
 
-    Mockito.verify(webSocketFuture, Mockito.atLeast(3))
-        .get(10, TimeUnit.SECONDS);
+    Mockito.verify(webSocketFuture, Mockito.atLeast(3)).get(10, TimeUnit.SECONDS);
   }
 
   @Test
@@ -168,32 +148,32 @@ class ResilientWebSocketTest {
     CompletableFuture<WebSocket> webSocketFuture =
         (CompletableFuture<WebSocket>) Mockito.mock(CompletableFuture.class);
     Mockito.doReturn(webSocketFuture)
-        .when(webSocketBuilder).buildAsync(Mockito.eq(uri), Mockito.any());
+        .when(webSocketBuilder)
+        .buildAsync(Mockito.eq(uri), Mockito.any());
     WebSocket webSocket = Mockito.mock(WebSocket.class);
-    Mockito.doReturn(webSocket)
-        .when(webSocketFuture).get(10, TimeUnit.SECONDS);
-    Mockito.doReturn(webSocketFuture)
-        .when(webSocket).sendPing(Mockito.any());
-    Mockito.doReturn(webSocketFuture)
-        .when(webSocket).sendText(data, true);
+    Mockito.doReturn(webSocket).when(webSocketFuture).get(10, TimeUnit.SECONDS);
+    Mockito.doReturn(webSocketFuture).when(webSocket).sendPing(Mockito.any());
+    Mockito.doReturn(webSocketFuture).when(webSocket).sendText(data, true);
     Assertions.assertTrue(resilientWebSocket.insertToStateIfAbsent(property, data));
     Mockito.doReturn(webSocketFuture)
-        .when(webSocket).sendClose(Mockito.eq(WebSocket.NORMAL_CLOSURE), Mockito.any());
-    Mockito.doReturn(false, true)
-        .when(webSocket).isOutputClosed();
-    Mockito.doReturn(true)
-        .when(webSocket).isInputClosed();
-
+        .when(webSocket)
+        .sendClose(Mockito.eq(WebSocket.NORMAL_CLOSURE), Mockito.any());
+    Mockito.doReturn(false, true).when(webSocket).isOutputClosed();
+    Mockito.doReturn(true).when(webSocket).isInputClosed();
 
     resilientWebSocket.close();
 
-    Assertions.assertThrows(IllegalResilientWebSocketStateException.class,
+    Assertions.assertThrows(
+        IllegalResilientWebSocketStateException.class,
         () -> resilientWebSocket.insertToStateIfAbsent(property, data));
-    Assertions.assertThrows(IllegalResilientWebSocketStateException.class,
+    Assertions.assertThrows(
+        IllegalResilientWebSocketStateException.class,
         () -> resilientWebSocket.removeFromStateWith(property, data));
-    Assertions.assertThrows(IllegalResilientWebSocketStateException.class,
+    Assertions.assertThrows(
+        IllegalResilientWebSocketStateException.class,
         () -> resilientWebSocket.updateState(property, data, oldData -> null));
-    Assertions.assertThrows(IllegalResilientWebSocketStateException.class,
+    Assertions.assertThrows(
+        IllegalResilientWebSocketStateException.class,
         () -> resilientWebSocket.getFromState(property));
   }
 
@@ -205,14 +185,12 @@ class ResilientWebSocketTest {
     CompletableFuture<WebSocket> webSocketFuture =
         (CompletableFuture<WebSocket>) Mockito.mock(CompletableFuture.class);
     Mockito.doReturn(webSocketFuture)
-        .when(webSocketBuilder).buildAsync(Mockito.eq(uri), Mockito.any());
+        .when(webSocketBuilder)
+        .buildAsync(Mockito.eq(uri), Mockito.any());
     WebSocket webSocket = Mockito.mock(WebSocket.class);
-    Mockito.doReturn(webSocket)
-        .when(webSocketFuture).get(10, TimeUnit.SECONDS);
-    Mockito.doReturn(webSocketFuture)
-        .when(webSocket).sendPing(Mockito.any());
-    Mockito.doReturn(webSocketFuture)
-        .when(webSocket).sendText(data, true);
+    Mockito.doReturn(webSocket).when(webSocketFuture).get(10, TimeUnit.SECONDS);
+    Mockito.doReturn(webSocketFuture).when(webSocket).sendPing(Mockito.any());
+    Mockito.doReturn(webSocketFuture).when(webSocket).sendText(data, true);
     Assertions.assertTrue(resilientWebSocket.insertToStateIfAbsent(property, data));
     ArgumentCaptor<ResilientWebSocketSubscriber> subscriberArgumentCaptor =
         ArgumentCaptor.forClass(ResilientWebSocketSubscriber.class);
@@ -220,18 +198,16 @@ class ResilientWebSocketTest {
         .buildAsync(Mockito.eq(uri), subscriberArgumentCaptor.capture());
     ResilientWebSocketSubscriber subscriber = subscriberArgumentCaptor.getValue();
     Mockito.doReturn(webSocketFuture)
-        .when(webSocket).sendClose(Mockito.eq(WebSocket.NORMAL_CLOSURE), Mockito.any());
-    Mockito.doReturn(false, true)
-        .when(webSocket).isOutputClosed();
-    Mockito.doReturn(true)
-        .when(webSocket).isInputClosed();
+        .when(webSocket)
+        .sendClose(Mockito.eq(WebSocket.NORMAL_CLOSURE), Mockito.any());
+    Mockito.doReturn(false, true).when(webSocket).isOutputClosed();
+    Mockito.doReturn(true).when(webSocket).isInputClosed();
 
     subscriber.onClose(webSocket, WebSocket.NORMAL_CLOSURE, "end-of-session");
 
     Assertions.assertEquals(data, resilientWebSocket.getFromState(property));
 
-    Mockito.verify(webSocketBuilder, Mockito.times(2))
-        .buildAsync(Mockito.eq(uri), Mockito.any());
+    Mockito.verify(webSocketBuilder, Mockito.times(2)).buildAsync(Mockito.eq(uri), Mockito.any());
   }
 
   @Test
@@ -242,14 +218,12 @@ class ResilientWebSocketTest {
     CompletableFuture<WebSocket> webSocketFuture =
         (CompletableFuture<WebSocket>) Mockito.mock(CompletableFuture.class);
     Mockito.doReturn(webSocketFuture)
-        .when(webSocketBuilder).buildAsync(Mockito.eq(uri), Mockito.any());
+        .when(webSocketBuilder)
+        .buildAsync(Mockito.eq(uri), Mockito.any());
     WebSocket webSocket = Mockito.mock(WebSocket.class);
-    Mockito.doReturn(webSocket)
-        .when(webSocketFuture).get(10, TimeUnit.SECONDS);
-    Mockito.doReturn(webSocketFuture)
-        .when(webSocket).sendPing(Mockito.any());
-    Mockito.doReturn(webSocketFuture)
-        .when(webSocket).sendText(data, true);
+    Mockito.doReturn(webSocket).when(webSocketFuture).get(10, TimeUnit.SECONDS);
+    Mockito.doReturn(webSocketFuture).when(webSocket).sendPing(Mockito.any());
+    Mockito.doReturn(webSocketFuture).when(webSocket).sendText(data, true);
     Assertions.assertTrue(resilientWebSocket.insertToStateIfAbsent(property, data));
     ArgumentCaptor<ResilientWebSocketSubscriber> subscriberArgumentCaptor =
         ArgumentCaptor.forClass(ResilientWebSocketSubscriber.class);
@@ -257,18 +231,16 @@ class ResilientWebSocketTest {
         .buildAsync(Mockito.eq(uri), subscriberArgumentCaptor.capture());
     ResilientWebSocketSubscriber subscriber = subscriberArgumentCaptor.getValue();
     Mockito.doReturn(webSocketFuture)
-        .when(webSocket).sendClose(Mockito.eq(WebSocket.NORMAL_CLOSURE), Mockito.any());
-    Mockito.doReturn(false, true)
-        .when(webSocket).isOutputClosed();
-    Mockito.doReturn(true)
-        .when(webSocket).isInputClosed();
+        .when(webSocket)
+        .sendClose(Mockito.eq(WebSocket.NORMAL_CLOSURE), Mockito.any());
+    Mockito.doReturn(false, true).when(webSocket).isOutputClosed();
+    Mockito.doReturn(true).when(webSocket).isInputClosed();
 
     subscriber.onError(webSocket, new RuntimeException("Test runtime exception."));
 
     Assertions.assertEquals(data, resilientWebSocket.getFromState(property));
 
-    Mockito.verify(webSocketBuilder, Mockito.times(2))
-        .buildAsync(Mockito.eq(uri), Mockito.any());
+    Mockito.verify(webSocketBuilder, Mockito.times(2)).buildAsync(Mockito.eq(uri), Mockito.any());
   }
 
   @Test
@@ -276,41 +248,33 @@ class ResilientWebSocketTest {
   void shouldRecoverAfterPingPongGameOver() throws Exception {
     long pingIntervalMillis = 250L;
     ResilientWebSocket resilientWebSocket = new ResilientWebSocket(
-        "test-web-socket",
-        uri,
-        webSocketBuilderProvider,
-        pingIntervalMillis,
-        textSubscriber);
+        "test-web-socket", uri, webSocketBuilderProvider, pingIntervalMillis, textSubscriber);
     String property = "property";
     String data = "data";
     CompletableFuture<WebSocket> webSocketFuture =
         (CompletableFuture<WebSocket>) Mockito.mock(CompletableFuture.class);
     Mockito.doReturn(webSocketFuture)
-        .when(webSocketBuilder).buildAsync(Mockito.eq(uri), Mockito.any());
+        .when(webSocketBuilder)
+        .buildAsync(Mockito.eq(uri), Mockito.any());
     WebSocket webSocket = Mockito.mock(WebSocket.class);
-    Mockito.doReturn(webSocket)
-        .when(webSocketFuture).get(10, TimeUnit.SECONDS);
-    Mockito.doReturn(webSocketFuture)
-        .when(webSocket).sendPing(Mockito.any());
-    Mockito.doReturn(webSocketFuture)
-        .when(webSocket).sendText(data, true);
+    Mockito.doReturn(webSocket).when(webSocketFuture).get(10, TimeUnit.SECONDS);
+    Mockito.doReturn(webSocketFuture).when(webSocket).sendPing(Mockito.any());
+    Mockito.doReturn(webSocketFuture).when(webSocket).sendText(data, true);
     Assertions.assertTrue(resilientWebSocket.insertToStateIfAbsent(property, data));
     Mockito.doReturn(webSocketFuture)
-        .when(webSocket).sendClose(Mockito.eq(WebSocket.NORMAL_CLOSURE), Mockito.any());
-    Mockito.doReturn(false, true)
-        .when(webSocket).isOutputClosed();
-    Mockito.doReturn(true)
-        .when(webSocket).isInputClosed();
+        .when(webSocket)
+        .sendClose(Mockito.eq(WebSocket.NORMAL_CLOSURE), Mockito.any());
+    Mockito.doReturn(false, true).when(webSocket).isOutputClosed();
+    Mockito.doReturn(true).when(webSocket).isInputClosed();
     TimeUnit.MILLISECONDS.sleep((int) (pingIntervalMillis * 1.5));
     Assertions.assertEquals(data, resilientWebSocket.getFromState(property));
 
-    Mockito.verify(webSocketBuilder, Mockito.atLeast(2))
-        .buildAsync(Mockito.eq(uri), Mockito.any());
+    Mockito.verify(webSocketBuilder, Mockito.atLeast(2)).buildAsync(Mockito.eq(uri), Mockito.any());
   }
 
   @Test
   void shouldGetTextSubscriber() {
-    Assertions.assertEquals(textSubscriber, resilientWebSocket.getTextSubscriber(TextSubscriber.class));
+    Assertions.assertEquals(
+        textSubscriber, resilientWebSocket.getTextSubscriber(TextSubscriber.class));
   }
-
 }

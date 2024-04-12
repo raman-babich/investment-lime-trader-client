@@ -32,6 +32,5 @@ public final class QuoteHistoryPeriod {
   public static final String QUARTER = "quarter";
   public static final String YEAR = "year";
 
-  private QuoteHistoryPeriod() {
-  }
+  private QuoteHistoryPeriod() {}
 }

@@ -38,6 +38,4 @@ public record AccountOrderChangedEvent(
     Integer executedQuantity,
     BigDecimal executedPrice,
     Instant executedTimestamp,
-    String orderStatus) {
-
-}
+    String orderStatus) {}

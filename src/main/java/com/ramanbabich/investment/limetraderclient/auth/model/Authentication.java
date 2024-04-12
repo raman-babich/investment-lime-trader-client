@@ -20,9 +20,4 @@ package com.ramanbabich.investment.limetraderclient.auth.model;
  * @author Raman Babich
  */
 public record Authentication(
-    String scope,
-    String tokenType,
-    String accessToken,
-    Integer expiresIn) {
-
-}
+    String scope, String tokenType, String accessToken, Integer expiresIn) {}

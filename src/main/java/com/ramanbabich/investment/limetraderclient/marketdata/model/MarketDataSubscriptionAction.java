@@ -21,8 +21,4 @@ import java.util.Set;
 /**
  * @author Raman Babich
  */
-public record MarketDataSubscriptionAction(
-    String action,
-    Set<String> symbols) {
-
-}
+public record MarketDataSubscriptionAction(String action, Set<String> symbols) {}

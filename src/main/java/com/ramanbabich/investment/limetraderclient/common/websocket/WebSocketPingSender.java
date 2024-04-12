@@ -43,7 +43,8 @@ public class WebSocketPingSender implements PingSender {
   @Override
   public void send() {
     try {
-      webSocket.sendPing(ByteBuffer.wrap(MESSAGE.getBytes(StandardCharsets.UTF_8)))
+      webSocket
+          .sendPing(ByteBuffer.wrap(MESSAGE.getBytes(StandardCharsets.UTF_8)))
           .get(10, TimeUnit.SECONDS);
     } catch (InterruptedException | ExecutionException | TimeoutException ex) {
       if (ex instanceof InterruptedException) {

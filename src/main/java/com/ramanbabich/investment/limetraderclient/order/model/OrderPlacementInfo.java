@@ -31,6 +31,4 @@ public record OrderPlacementInfo(
     String orderType,
     String side,
     String comment,
-    String exchange) {
-
-}
+    String exchange) {}

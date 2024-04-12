@@ -25,6 +25,5 @@ public final class OrderTimeInForce {
   public static final String GOOD_TILL_CANCEL = "good_till_cancel";
   public static final String GOOD_TILL_CROSSING = "good_till_crossing";
 
-  private OrderTimeInForce() {
-  }
+  private OrderTimeInForce() {}
 }

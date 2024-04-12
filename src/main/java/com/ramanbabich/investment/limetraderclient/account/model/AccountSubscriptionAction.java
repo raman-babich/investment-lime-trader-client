@@ -22,7 +22,4 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Raman Babich
  */
 public record AccountSubscriptionAction(
-    String action,
-    @JsonProperty("account") String accountNumber) {
-
-}
+    String action, @JsonProperty("account") String accountNumber) {}

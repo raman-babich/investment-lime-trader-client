@@ -47,6 +47,4 @@ public record Quote(
     BigDecimal delta,
     BigDecimal gamma,
     BigDecimal theta,
-    BigDecimal vega) {
-
-}
+    BigDecimal vega) {}

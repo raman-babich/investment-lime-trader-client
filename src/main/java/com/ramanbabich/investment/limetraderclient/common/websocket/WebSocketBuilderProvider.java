@@ -24,5 +24,4 @@ import java.net.http.WebSocket;
 public interface WebSocketBuilderProvider {
 
   WebSocket.Builder provide();
-
 }

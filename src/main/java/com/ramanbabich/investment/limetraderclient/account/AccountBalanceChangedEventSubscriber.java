@@ -24,5 +24,4 @@ import com.ramanbabich.investment.limetraderclient.account.model.AccountBalanceC
 public interface AccountBalanceChangedEventSubscriber {
 
   void onEvent(AccountBalanceChangedEvent event);
-
 }

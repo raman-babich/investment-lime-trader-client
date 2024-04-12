@@ -56,20 +56,20 @@ public class MarketDataTextSubscriber implements TextSubscriber {
     try {
       doOnText(text);
     } catch (IllegalArgumentException | JsonProcessingException ex) {
-      throw new DataProcessingFailedException(String.format(
-          "Error occurred during processing '%s' text.", text),
-          ex);
+      throw new DataProcessingFailedException(
+          String.format("Error occurred during processing '%s' text.", text), ex);
     }
   }
 
   private void doOnText(String text) throws JsonProcessingException {
-    Map<String, Object> parsedData = jsonMapper.readValue(text,
-        TypeFactory.defaultInstance()
-            .constructMapType(Map.class, String.class, Object.class));
+    Map<String, Object> parsedData = jsonMapper.readValue(
+        text,
+        TypeFactory.defaultInstance().constructMapType(Map.class, String.class, Object.class));
     Object possibleDataType = parsedData.get(DATA_TYPE_PROPERTY);
     if (!(possibleDataType instanceof String dataType)) {
-      LOG.warn("The data '{}' with unrecognizable type has arrived. "
-          + "The data will be skipped.", text);
+      LOG.warn(
+          "The data '{}' with unrecognizable type has arrived. " + "The data will be skipped.",
+          text);
       return;
     }
     if (QUOTE_CHANGED_DATA_TYPE.equals(dataType)) {
@@ -78,7 +78,8 @@ public class MarketDataTextSubscriber implements TextSubscriber {
       if (threadSafeSubscriber != null) {
         threadSafeSubscriber.onEvent(event);
       } else {
-        LOG.warn("Quote changed event subscriber is not set but events '{}' "
+        LOG.warn(
+            "Quote changed event subscriber is not set but events '{}' "
                 + "have arrived. Events will be skipped.",
             text);
       }
@@ -88,7 +89,8 @@ public class MarketDataTextSubscriber implements TextSubscriber {
       if (threadSafeSubscriber != null) {
         threadSafeSubscriber.onEvent(event);
       } else {
-        LOG.warn("Trade made event subscriber is not set but events '{}' "
+        LOG.warn(
+            "Trade made event subscriber is not set but events '{}' "
                 + "have arrived. Events will be skipped.",
             text);
       }
@@ -98,7 +100,8 @@ public class MarketDataTextSubscriber implements TextSubscriber {
       if (threadSafeSubscriber != null) {
         threadSafeSubscriber.onEvent(event);
       } else {
-        LOG.warn("Error event subscriber is not set but events '{}' "
+        LOG.warn(
+            "Error event subscriber is not set but events '{}' "
                 + "have arrived. Events will be skipped.",
             text);
       }
@@ -118,5 +121,4 @@ public class MarketDataTextSubscriber implements TextSubscriber {
   public void setSubscriber(TradeMadeEventSubscriber tradeMadeEventSubscriber) {
     this.tradeMadeEventSubscriber = tradeMadeEventSubscriber;
   }
-
 }

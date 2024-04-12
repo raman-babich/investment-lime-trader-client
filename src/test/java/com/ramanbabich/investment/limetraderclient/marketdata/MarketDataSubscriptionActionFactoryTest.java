@@ -34,14 +34,10 @@ class MarketDataSubscriptionActionFactoryTest {
 
   @Test
   void shouldGetAction() {
-    MarketDataSubscriptionAction expected = new MarketDataSubscriptionAction(
-        SUBSCRIBE_ACTION, Set.of("symbol"));
-    Assertions.assertEquals(
-        expected, factory.getAction(expected.symbols(), true));
-    expected = new MarketDataSubscriptionAction(
-        UNSUBSCRIBE_ACTION, expected.symbols());
-    Assertions.assertEquals(
-        expected, factory.getAction(expected.symbols(), false));
+    MarketDataSubscriptionAction expected =
+        new MarketDataSubscriptionAction(SUBSCRIBE_ACTION, Set.of("symbol"));
+    Assertions.assertEquals(expected, factory.getAction(expected.symbols(), true));
+    expected = new MarketDataSubscriptionAction(UNSUBSCRIBE_ACTION, expected.symbols());
+    Assertions.assertEquals(expected, factory.getAction(expected.symbols(), false));
   }
-
 }

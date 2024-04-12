@@ -113,8 +113,7 @@ public class LimeTraderClient implements AutoCloseable {
   private static final String AUTHORIZATION_HEADER = "authorization";
   private static final String AUTHORIZATION_PREFIX = "Bearer ";
 
-  private static final ClientConfig DEFAULT_CONFIG =
-      new ClientConfig(null, null, null, null);
+  private static final ClientConfig DEFAULT_CONFIG = new ClientConfig(null, null, null, null);
 
   private static final String ACCOUNT_BALANCE_CHANGED_EVENT_STATE_PROPERTY_PATTERN =
       "balanceChanged.%s";
@@ -174,11 +173,11 @@ public class LimeTraderClient implements AutoCloseable {
 
   public LimeTraderClient(ClientConfig clientConfig, Credentials credentials) {
     Objects.requireNonNull(clientConfig, "Client config should be specified");
-    this.baseHttpAuthUrl = Objects.requireNonNullElse(
-        clientConfig.baseHttpAuthUrl(), DEFAULT_BASE_HTTP_AUTH_URL);
+    this.baseHttpAuthUrl =
+        Objects.requireNonNullElse(clientConfig.baseHttpAuthUrl(), DEFAULT_BASE_HTTP_AUTH_URL);
     this.tokenUrl = this.baseHttpAuthUrl + "/connect/token";
-    this.baseHttpApiUrl = Objects.requireNonNullElse(
-        clientConfig.baseHttpApiUrl(), DEFAULT_BASE_HTTP_API_URL);
+    this.baseHttpApiUrl =
+        Objects.requireNonNullElse(clientConfig.baseHttpApiUrl(), DEFAULT_BASE_HTTP_API_URL);
     this.accountsUrl = this.baseHttpApiUrl + "/accounts";
     this.accountPositionsUrlPattern = this.accountsUrl + "/%s/positions";
     this.accountTradesUrlPattern = this.accountsUrl + "/%s/trades/%s";
@@ -200,13 +199,13 @@ public class LimeTraderClient implements AutoCloseable {
     this.optionsUrlPattern = this.securitiesUrl + "/%s/options";
     this.optionSeriesUrlPattern = this.optionsUrlPattern + "/series";
     this.optionExpirationUrlPattern = this.optionsUrlPattern + "/expirations";
-    this.baseWsApiUrl = Objects.requireNonNullElse(
-        clientConfig.baseWsApiUrl(), DEFAULT_BASE_WS_API_URL);
+    this.baseWsApiUrl =
+        Objects.requireNonNullElse(clientConfig.baseWsApiUrl(), DEFAULT_BASE_WS_API_URL);
     this.accountWsUrl = this.baseWsApiUrl + "/accounts";
     this.marketDataWsUrl = this.baseWsApiUrl + "/marketdata";
 
-    this.httpClient = Objects.requireNonNullElse(
-        clientConfig.httpClient(), HttpClient.newHttpClient());
+    this.httpClient =
+        Objects.requireNonNullElse(clientConfig.httpClient(), HttpClient.newHttpClient());
     this.jsonMapper = JsonMapper.builder()
         .addModule(new ParameterNamesModule())
         .addModule(new Jdk8Module())
@@ -223,7 +222,8 @@ public class LimeTraderClient implements AutoCloseable {
         URI.create(accountWsUrl),
         () -> {
           refreshAuthIfNeeded();
-          return httpClient.newWebSocketBuilder()
+          return httpClient
+              .newWebSocketBuilder()
               .header(AUTHORIZATION_HEADER, AUTHORIZATION_PREFIX + auth.accessToken());
         },
         new AccountTextSubscriber(this.jsonMapper));
@@ -233,18 +233,18 @@ public class LimeTraderClient implements AutoCloseable {
         URI.create(marketDataWsUrl),
         () -> {
           refreshAuthIfNeeded();
-          return httpClient.newWebSocketBuilder()
+          return httpClient
+              .newWebSocketBuilder()
               .header(AUTHORIZATION_HEADER, AUTHORIZATION_PREFIX + auth.accessToken());
         },
         new MarketDataTextSubscriber(this.jsonMapper));
   }
 
   private static String createUrlEncodedForm(Map<String, String> form) {
-    return form.entrySet()
-        .stream()
+    return form.entrySet().stream()
         .map(e -> URLEncoder.encode(e.getKey(), StandardCharsets.UTF_8)
-                + "="
-                + URLEncoder.encode(e.getValue(), StandardCharsets.UTF_8))
+            + "="
+            + URLEncoder.encode(e.getValue(), StandardCharsets.UTF_8))
         .collect(Collectors.joining("&"));
   }
 
@@ -277,8 +277,7 @@ public class LimeTraderClient implements AutoCloseable {
     HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
     if (response.statusCode() / 100 == 2) {
       auth = jsonMapper.readValue(response.body(), Authentication.class);
-      authRefreshTimestamp =
-          now.plus((long) (auth.expiresIn() * 0.8), ChronoUnit.SECONDS);
+      authRefreshTimestamp = now.plus((long) (auth.expiresIn() * 0.8), ChronoUnit.SECONDS);
     } else if (response.statusCode() / 100 == 4) {
       throw new InvalidCredentialsException(String.format(
           "Can't retrieve an authentication because of '%s' error.", response.body()));
@@ -364,9 +363,10 @@ public class LimeTraderClient implements AutoCloseable {
       if (ex instanceof InterruptedException) {
         Thread.currentThread().interrupt();
       }
-      throw new UnexpectedFailureException(String.format(
-          "Can't get account positions for '%s' because of unexpected error.",
-          accountPositionQuery),
+      throw new UnexpectedFailureException(
+          String.format(
+              "Can't get account positions for '%s' because of unexpected error.",
+              accountPositionQuery),
           ex);
     }
   }
@@ -374,15 +374,16 @@ public class LimeTraderClient implements AutoCloseable {
   private List<AccountPosition> doGetAccountPositions(AccountPositionQuery accountPositionQuery)
       throws IOException, InterruptedException {
     Objects.requireNonNull(accountPositionQuery, "Account position query should be specified.");
-    Objects.requireNonNull(accountPositionQuery.accountNumber(),
-        "Account number should be specified.");
+    Objects.requireNonNull(
+        accountPositionQuery.accountNumber(), "Account number should be specified.");
     verifyNotClosed();
     refreshAuthIfNeeded();
     Map<String, String> requestParams = new TreeMap<>();
     if (accountPositionQuery.date() != null) {
       requestParams.put("date", DateTimeFormatter.ISO_DATE.format(accountPositionQuery.date()));
     }
-    URI uri = buildUri(String.format(
+    URI uri = buildUri(
+        String.format(
             accountPositionsUrlPattern,
             URLEncoder.encode(accountPositionQuery.accountNumber(), StandardCharsets.UTF_8)),
         requestParams);
@@ -414,8 +415,9 @@ public class LimeTraderClient implements AutoCloseable {
       if (ex instanceof InterruptedException) {
         Thread.currentThread().interrupt();
       }
-      throw new UnexpectedFailureException(String.format(
-          "Can't get account trades for '%s' because of unexpected error.", accountTradeQuery),
+      throw new UnexpectedFailureException(
+          String.format(
+              "Can't get account trades for '%s' because of unexpected error.", accountTradeQuery),
           ex);
     }
   }
@@ -423,8 +425,8 @@ public class LimeTraderClient implements AutoCloseable {
   private AccountTradeList doGetAccountTrades(AccountTradeQuery accountTradeQuery)
       throws IOException, InterruptedException {
     Objects.requireNonNull(accountTradeQuery, "Account trade query should be specified.");
-    Objects.requireNonNull(accountTradeQuery.accountNumber(),
-        "Account number should be specified.");
+    Objects.requireNonNull(
+        accountTradeQuery.accountNumber(), "Account number should be specified.");
     Objects.requireNonNull(accountTradeQuery.date(), "Date should be specified.");
     verifyNotClosed();
     refreshAuthIfNeeded();
@@ -435,7 +437,8 @@ public class LimeTraderClient implements AutoCloseable {
     if (accountTradeQuery.skip() != null) {
       requestParams.put("skip", accountTradeQuery.skip().toString());
     }
-    URI uri = buildUri(String.format(
+    URI uri = buildUri(
+        String.format(
             accountTradesUrlPattern,
             URLEncoder.encode(accountTradeQuery.accountNumber(), StandardCharsets.UTF_8),
             URLEncoder.encode(
@@ -468,8 +471,9 @@ public class LimeTraderClient implements AutoCloseable {
       if (ex instanceof InterruptedException) {
         Thread.currentThread().interrupt();
       }
-      throw new UnexpectedFailureException(String.format(
-          "Can't get account '%s' active orders because of unexpected error.", accountNumber),
+      throw new UnexpectedFailureException(
+          String.format(
+              "Can't get account '%s' active orders because of unexpected error.", accountNumber),
           ex);
     }
   }
@@ -480,8 +484,7 @@ public class LimeTraderClient implements AutoCloseable {
     verifyNotClosed();
     refreshAuthIfNeeded();
     URI uri = URI.create(String.format(
-        accountActiveOrderUrlPattern,
-        URLEncoder.encode(accountNumber, StandardCharsets.UTF_8)));
+        accountActiveOrderUrlPattern, URLEncoder.encode(accountNumber, StandardCharsets.UTF_8)));
     HttpRequest request = HttpRequest.newBuilder()
         .uri(uri)
         .header("accept", "application/json")
@@ -490,8 +493,10 @@ public class LimeTraderClient implements AutoCloseable {
         .build();
     HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
     if (response.statusCode() / 100 == 2) {
-      return jsonMapper.readValue(response.body(), TypeFactory.defaultInstance()
-          .constructCollectionType(List.class, AccountActiveOrder.class));
+      return jsonMapper.readValue(
+          response.body(),
+          TypeFactory.defaultInstance()
+              .constructCollectionType(List.class, AccountActiveOrder.class));
     } else if (response.statusCode() / 100 == 4) {
       throw new InvalidInputException(String.format(
           "Can't get account '%s' active orders because of '%s' input error with status '%d'.",
@@ -511,30 +516,30 @@ public class LimeTraderClient implements AutoCloseable {
       if (ex instanceof InterruptedException) {
         Thread.currentThread().interrupt();
       }
-      throw new UnexpectedFailureException(String.format(
-          "Can't get account transactions for '%s' because of unexpected error.",
-          accountTransactionQuery),
+      throw new UnexpectedFailureException(
+          String.format(
+              "Can't get account transactions for '%s' because of unexpected error.",
+              accountTransactionQuery),
           ex);
     }
   }
 
   private AccountTransactionList doGetAccountTransactions(
-      AccountTransactionQuery accountTransactionQuery)
-      throws IOException, InterruptedException {
-    Objects.requireNonNull(accountTransactionQuery,
-        "Account transaction query should be specified.");
-    Objects.requireNonNull(accountTransactionQuery.accountNumber(),
-        "Account number should be specified.");
+      AccountTransactionQuery accountTransactionQuery) throws IOException, InterruptedException {
+    Objects.requireNonNull(
+        accountTransactionQuery, "Account transaction query should be specified.");
+    Objects.requireNonNull(
+        accountTransactionQuery.accountNumber(), "Account number should be specified.");
     verifyNotClosed();
     refreshAuthIfNeeded();
     Map<String, String> requestParams = new TreeMap<>();
     if (accountTransactionQuery.startDate() != null) {
-      requestParams.put("start_date",
-          DateTimeFormatter.ISO_DATE.format(accountTransactionQuery.startDate()));
+      requestParams.put(
+          "start_date", DateTimeFormatter.ISO_DATE.format(accountTransactionQuery.startDate()));
     }
     if (accountTransactionQuery.endDate() != null) {
-      requestParams.put("end_date",
-          DateTimeFormatter.ISO_DATE.format(accountTransactionQuery.endDate()));
+      requestParams.put(
+          "end_date", DateTimeFormatter.ISO_DATE.format(accountTransactionQuery.endDate()));
     }
     if (accountTransactionQuery.limit() != null) {
       requestParams.put("limit", accountTransactionQuery.limit().toString());
@@ -542,7 +547,8 @@ public class LimeTraderClient implements AutoCloseable {
     if (accountTransactionQuery.skip() != null) {
       requestParams.put("skip", accountTransactionQuery.skip().toString());
     }
-    URI uri = buildUri(String.format(
+    URI uri = buildUri(
+        String.format(
             accountTransactionsUrlPattern,
             URLEncoder.encode(accountTransactionQuery.accountNumber(), StandardCharsets.UTF_8)),
         requestParams);
@@ -572,8 +578,9 @@ public class LimeTraderClient implements AutoCloseable {
       if (ex instanceof InterruptedException) {
         Thread.currentThread().interrupt();
       }
-      throw new UnexpectedFailureException(String.format(
-          "Can't place the order '%s' because of unexpected error.", orderPlacementInfo),
+      throw new UnexpectedFailureException(
+          String.format(
+              "Can't place the order '%s' because of unexpected error.", orderPlacementInfo),
           ex);
     }
   }
@@ -606,8 +613,8 @@ public class LimeTraderClient implements AutoCloseable {
 
   private void validateOrderPlacementInfo(OrderPlacementInfo orderPlacementInfo) {
     Objects.requireNonNull(orderPlacementInfo, "Order placement info should be specified.");
-    Objects.requireNonNull(orderPlacementInfo.accountNumber(),
-        "Account number should be specified.");
+    Objects.requireNonNull(
+        orderPlacementInfo.accountNumber(), "Account number should be specified.");
     Objects.requireNonNull(orderPlacementInfo.symbol(), "Symbol should be specified.");
     Objects.requireNonNull(orderPlacementInfo.quantity(), "Quantity should be specified.");
     String orderType = orderPlacementInfo.orderType();
@@ -628,8 +635,9 @@ public class LimeTraderClient implements AutoCloseable {
       if (ex instanceof InterruptedException) {
         Thread.currentThread().interrupt();
       }
-      throw new UnexpectedFailureException(String.format(
-          "Can't validate the order '%s' because of unexpected error.", orderValidationInfo),
+      throw new UnexpectedFailureException(
+          String.format(
+              "Can't validate the order '%s' because of unexpected error.", orderValidationInfo),
           ex);
     }
   }
@@ -662,8 +670,8 @@ public class LimeTraderClient implements AutoCloseable {
 
   private void validateOrderValidationInfo(OrderValidationInfo orderValidationInfo) {
     Objects.requireNonNull(orderValidationInfo, "Order placement info should be specified.");
-    Objects.requireNonNull(orderValidationInfo.accountNumber(),
-        "Account number should be specified.");
+    Objects.requireNonNull(
+        orderValidationInfo.accountNumber(), "Account number should be specified.");
     Objects.requireNonNull(orderValidationInfo.symbol(), "Symbol should be specified.");
     Objects.requireNonNull(orderValidationInfo.quantity(), "Quantity should be specified.");
     String orderType = orderValidationInfo.orderType();
@@ -684,9 +692,8 @@ public class LimeTraderClient implements AutoCloseable {
       if (ex instanceof InterruptedException) {
         Thread.currentThread().interrupt();
       }
-      throw new UnexpectedFailureException(String.format(
-          "Can't get the order '%s' because of unexpected error.", id),
-          ex);
+      throw new UnexpectedFailureException(
+          String.format("Can't get the order '%s' because of unexpected error.", id), ex);
     }
   }
 
@@ -694,9 +701,8 @@ public class LimeTraderClient implements AutoCloseable {
     Objects.requireNonNull(id, "Id should be specified.");
     verifyNotClosed();
     refreshAuthIfNeeded();
-    URI uri = URI.create(String.format(
-        orderUrlPattern,
-        URLEncoder.encode(id, StandardCharsets.UTF_8)));
+    URI uri =
+        URI.create(String.format(orderUrlPattern, URLEncoder.encode(id, StandardCharsets.UTF_8)));
     HttpRequest request = HttpRequest.newBuilder()
         .uri(uri)
         .header("accept", "application/json")
@@ -720,30 +726,30 @@ public class LimeTraderClient implements AutoCloseable {
     }
   }
 
-  public OrderCancellationResult cancelOrder(String id,
-      OrderCancellationInfo orderCancellationInfo) {
+  public OrderCancellationResult cancelOrder(
+      String id, OrderCancellationInfo orderCancellationInfo) {
     try {
       return doCancelOrder(id, orderCancellationInfo);
     } catch (IOException | InterruptedException ex) {
       if (ex instanceof InterruptedException) {
         Thread.currentThread().interrupt();
       }
-      throw new UnexpectedFailureException(String.format(
-          "Can't cancel the order '%s' because of unexpected error.", orderCancellationInfo),
+      throw new UnexpectedFailureException(
+          String.format(
+              "Can't cancel the order '%s' because of unexpected error.", orderCancellationInfo),
           ex);
     }
   }
 
-  private OrderCancellationResult doCancelOrder(String id,
-      OrderCancellationInfo orderCancellationInfo)
+  private OrderCancellationResult doCancelOrder(
+      String id, OrderCancellationInfo orderCancellationInfo)
       throws IOException, InterruptedException {
     Objects.requireNonNull(orderCancellationInfo, "Order cancellation info should be specified.");
     Objects.requireNonNull(id, "Id should be specified.");
     verifyNotClosed();
     refreshAuthIfNeeded();
-    URI uri = URI.create(String.format(
-        cancelOrderUrlPattern,
-        URLEncoder.encode(id, StandardCharsets.UTF_8)));
+    URI uri = URI.create(
+        String.format(cancelOrderUrlPattern, URLEncoder.encode(id, StandardCharsets.UTF_8)));
     HttpRequest request = HttpRequest.newBuilder()
         .uri(uri)
         .header("accept", "application/json")
@@ -775,8 +781,10 @@ public class LimeTraderClient implements AutoCloseable {
       if (ex instanceof InterruptedException) {
         Thread.currentThread().interrupt();
       }
-      throw new UnexpectedFailureException(String.format(
-          "Can't get order fee charges for '%s' because of unexpected error.", orderFeeChargeQuery),
+      throw new UnexpectedFailureException(
+          String.format(
+              "Can't get order fee charges for '%s' because of unexpected error.",
+              orderFeeChargeQuery),
           ex);
     }
   }
@@ -795,8 +803,9 @@ public class LimeTraderClient implements AutoCloseable {
         .build();
     HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
     if (response.statusCode() / 100 == 2) {
-      return jsonMapper.readValue(response.body(), TypeFactory.defaultInstance()
-          .constructCollectionType(List.class, OrderFeeCharge.class));
+      return jsonMapper.readValue(
+          response.body(),
+          TypeFactory.defaultInstance().constructCollectionType(List.class, OrderFeeCharge.class));
     } else if (response.statusCode() / 100 == 4) {
       throw new InvalidInputException(String.format(
           "Can't get order fee charges for '%s' because of '%s' input error with status '%d'.",
@@ -810,8 +819,8 @@ public class LimeTraderClient implements AutoCloseable {
 
   private void validateOrderFeeChargeQuery(OrderFeeChargeQuery orderFeeChargeQuery) {
     Objects.requireNonNull(orderFeeChargeQuery, "Order fee charge query should be specified.");
-    Objects.requireNonNull(orderFeeChargeQuery.accountNumber(),
-        "Account number should be specified.");
+    Objects.requireNonNull(
+        orderFeeChargeQuery.accountNumber(), "Account number should be specified.");
     Objects.requireNonNull(orderFeeChargeQuery.symbol(), "Symbol should be specified.");
     Objects.requireNonNull(orderFeeChargeQuery.quantity(), "Quantity should be specified.");
     Objects.requireNonNull(orderFeeChargeQuery.side(), "Side should be specified.");
@@ -824,9 +833,8 @@ public class LimeTraderClient implements AutoCloseable {
       if (ex instanceof InterruptedException) {
         Thread.currentThread().interrupt();
       }
-      throw new UnexpectedFailureException(String.format(
-          "Can't get quote '%s' because of unexpected error.", symbol),
-          ex);
+      throw new UnexpectedFailureException(
+          String.format("Can't get quote '%s' because of unexpected error.", symbol), ex);
     }
   }
 
@@ -846,8 +854,8 @@ public class LimeTraderClient implements AutoCloseable {
       return jsonMapper.readValue(response.body(), Quote.class);
     } else if (response.statusCode() / 100 == 4) {
       if (response.statusCode() == 404) {
-        throw new NotFoundException(String.format(
-            "The quote for symbol '%s' is not found.", symbol));
+        throw new NotFoundException(
+            String.format("The quote for symbol '%s' is not found.", symbol));
       }
       throw new InvalidInputException(String.format(
           "Can't get quote '%s' because of '%s' input error with status '%d'.",
@@ -866,8 +874,9 @@ public class LimeTraderClient implements AutoCloseable {
       if (ex instanceof InterruptedException) {
         Thread.currentThread().interrupt();
       }
-      throw new UnexpectedFailureException(String.format(
-          "Can't get quotes '%s' because of unexpected error.", String.join(",", symbols)),
+      throw new UnexpectedFailureException(
+          String.format(
+              "Can't get quotes '%s' because of unexpected error.", String.join(",", symbols)),
           ex);
     }
   }
@@ -887,8 +896,9 @@ public class LimeTraderClient implements AutoCloseable {
         .build();
     HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
     if (response.statusCode() / 100 == 2) {
-      return jsonMapper.readValue(response.body(), TypeFactory.defaultInstance()
-          .constructCollectionType(List.class, Quote.class));
+      return jsonMapper.readValue(
+          response.body(),
+          TypeFactory.defaultInstance().constructCollectionType(List.class, Quote.class));
     } else if (response.statusCode() / 100 == 4) {
       throw new InvalidInputException(String.format(
           "Can't get quotes '%s' because of '%s' input error with status '%d'.",
@@ -907,8 +917,9 @@ public class LimeTraderClient implements AutoCloseable {
       if (ex instanceof InterruptedException) {
         Thread.currentThread().interrupt();
       }
-      throw new UnexpectedFailureException(String.format(
-          "Can't get quote history for '%s' because of unexpected error.", quoteHistoryQuery),
+      throw new UnexpectedFailureException(
+          String.format(
+              "Can't get quote history for '%s' because of unexpected error.", quoteHistoryQuery),
           ex);
     }
   }
@@ -932,8 +943,9 @@ public class LimeTraderClient implements AutoCloseable {
         .build();
     HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
     if (response.statusCode() / 100 == 2) {
-      return jsonMapper.readValue(response.body(), TypeFactory.defaultInstance()
-          .constructCollectionType(List.class, Candle.class));
+      return jsonMapper.readValue(
+          response.body(),
+          TypeFactory.defaultInstance().constructCollectionType(List.class, Candle.class));
     } else if (response.statusCode() / 100 == 4) {
       throw new InvalidInputException(String.format(
           "Can't get quote history for '%s' because of '%s' input error with status '%d'.",
@@ -995,8 +1007,9 @@ public class LimeTraderClient implements AutoCloseable {
       if (ex instanceof InterruptedException) {
         Thread.currentThread().interrupt();
       }
-      throw new UnexpectedFailureException(String.format(
-          "Can't get securities for '%s' because of unexpected error.", securityQuery),
+      throw new UnexpectedFailureException(
+          String.format(
+              "Can't get securities for '%s' because of unexpected error.", securityQuery),
           ex);
     }
   }
@@ -1042,8 +1055,8 @@ public class LimeTraderClient implements AutoCloseable {
       if (ex instanceof InterruptedException) {
         Thread.currentThread().interrupt();
       }
-      throw new UnexpectedFailureException(String.format(
-          "Can't get option series for '%s' because of unexpected error.", symbol),
+      throw new UnexpectedFailureException(
+          String.format("Can't get option series for '%s' because of unexpected error.", symbol),
           ex);
     }
   }
@@ -1052,9 +1065,8 @@ public class LimeTraderClient implements AutoCloseable {
     Objects.requireNonNull(symbol, "Symbol should be specified.");
     verifyNotClosed();
     refreshAuthIfNeeded();
-    URI uri = URI.create(String.format(
-        optionSeriesUrlPattern,
-        URLEncoder.encode(symbol, StandardCharsets.UTF_8)));
+    URI uri = URI.create(
+        String.format(optionSeriesUrlPattern, URLEncoder.encode(symbol, StandardCharsets.UTF_8)));
     HttpRequest request = HttpRequest.newBuilder()
         .uri(uri)
         .header("accept", "application/json")
@@ -1063,8 +1075,9 @@ public class LimeTraderClient implements AutoCloseable {
         .build();
     HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
     if (response.statusCode() / 100 == 2) {
-      return jsonMapper.readValue(response.body(), TypeFactory.defaultInstance()
-          .constructCollectionType(List.class, String.class));
+      return jsonMapper.readValue(
+          response.body(),
+          TypeFactory.defaultInstance().constructCollectionType(List.class, String.class));
     } else if (response.statusCode() / 100 == 4) {
       throw new InvalidInputException(String.format(
           "Can't get option series for '%s' because of '%s' input error with status '%d'.",
@@ -1083,9 +1096,10 @@ public class LimeTraderClient implements AutoCloseable {
       if (ex instanceof InterruptedException) {
         Thread.currentThread().interrupt();
       }
-      throw new UnexpectedFailureException(String.format(
-          "Can't get option expirations for '%s' because of unexpected error.",
-          optionExpirationQuery),
+      throw new UnexpectedFailureException(
+          String.format(
+              "Can't get option expirations for '%s' because of unexpected error.",
+              optionExpirationQuery),
           ex);
     }
   }
@@ -1100,7 +1114,8 @@ public class LimeTraderClient implements AutoCloseable {
     if (optionExpirationQuery.series() != null) {
       requestParams.put("series", optionExpirationQuery.series());
     }
-    URI uri = buildUri(String.format(
+    URI uri = buildUri(
+        String.format(
             optionExpirationUrlPattern,
             URLEncoder.encode(optionExpirationQuery.symbol(), StandardCharsets.UTF_8)),
         requestParams);
@@ -1112,8 +1127,9 @@ public class LimeTraderClient implements AutoCloseable {
         .build();
     HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
     if (response.statusCode() / 100 == 2) {
-      return jsonMapper.readValue(response.body(), TypeFactory.defaultInstance()
-          .constructCollectionType(List.class, LocalDate.class));
+      return jsonMapper.readValue(
+          response.body(),
+          TypeFactory.defaultInstance().constructCollectionType(List.class, LocalDate.class));
     } else if (response.statusCode() / 100 == 4) {
       throw new InvalidInputException(String.format(
           "Can't get option expirations for '%s' because of '%s' input error with status '%d'.",
@@ -1132,8 +1148,8 @@ public class LimeTraderClient implements AutoCloseable {
       if (ex instanceof InterruptedException) {
         Thread.currentThread().interrupt();
       }
-      throw new UnexpectedFailureException(String.format(
-          "Can't get options for '%s' because of unexpected error.", optionQuery),
+      throw new UnexpectedFailureException(
+          String.format("Can't get options for '%s' because of unexpected error.", optionQuery),
           ex);
     }
   }
@@ -1152,9 +1168,9 @@ public class LimeTraderClient implements AutoCloseable {
     if (optionQuery.series() != null) {
       requestParams.put("series", optionQuery.series());
     }
-    URI uri = buildUri(String.format(
-            optionsUrlPattern,
-            URLEncoder.encode(optionQuery.symbol(), StandardCharsets.UTF_8)),
+    URI uri = buildUri(
+        String.format(
+            optionsUrlPattern, URLEncoder.encode(optionQuery.symbol(), StandardCharsets.UTF_8)),
         requestParams);
     HttpRequest request = HttpRequest.newBuilder()
         .uri(uri)
@@ -1164,8 +1180,9 @@ public class LimeTraderClient implements AutoCloseable {
         .build();
     HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
     if (response.statusCode() / 100 == 2) {
-      return jsonMapper.readValue(response.body(), TypeFactory.defaultInstance()
-          .constructCollectionType(List.class, Option.class));
+      return jsonMapper.readValue(
+          response.body(),
+          TypeFactory.defaultInstance().constructCollectionType(List.class, Option.class));
     } else if (response.statusCode() / 100 == 4) {
       throw new InvalidInputException(String.format(
           "Can't get options for '%s' because of '%s' input error with status '%d'.",
@@ -1243,8 +1260,9 @@ public class LimeTraderClient implements AutoCloseable {
           String.format(ACCOUNT_BALANCE_CHANGED_EVENT_STATE_PROPERTY_PATTERN, accountNumber),
           jsonMapper.writeValueAsString(subscribeAction));
     } catch (StateChangeFailedException | JsonProcessingException ex) {
-      throw new UnexpectedFailureException(String.format(
-          "Subscription for account '%s' balance changed events failed.", accountNumber),
+      throw new UnexpectedFailureException(
+          String.format(
+              "Subscription for account '%s' balance changed events failed.", accountNumber),
           ex);
     } catch (IllegalResilientWebSocketStateException ex) {
       throw new IllegalLimeTraderClientStateException("Lime trader client is closed.", ex);
@@ -1262,8 +1280,9 @@ public class LimeTraderClient implements AutoCloseable {
           String.format(ACCOUNT_BALANCE_CHANGED_EVENT_STATE_PROPERTY_PATTERN, accountNumber),
           jsonMapper.writeValueAsString(unsubscribeAction));
     } catch (StateChangeFailedException | JsonProcessingException ex) {
-      throw new UnexpectedFailureException(String.format(
-          "Unsubscription from account '%s' balance changed events failed.", accountNumber),
+      throw new UnexpectedFailureException(
+          String.format(
+              "Unsubscription from account '%s' balance changed events failed.", accountNumber),
           ex);
     } catch (IllegalResilientWebSocketStateException ex) {
       throw new IllegalLimeTraderClientStateException("Lime trader client is closed.", ex);
@@ -1281,8 +1300,9 @@ public class LimeTraderClient implements AutoCloseable {
           String.format(ACCOUNT_POSITIONS_CHANGED_EVENT_STATE_PROPERTY_PATTERN, accountNumber),
           jsonMapper.writeValueAsString(subscribeAction));
     } catch (StateChangeFailedException | JsonProcessingException ex) {
-      throw new UnexpectedFailureException(String.format(
-          "Subscription for account '%s' positions changed events failed.", accountNumber),
+      throw new UnexpectedFailureException(
+          String.format(
+              "Subscription for account '%s' positions changed events failed.", accountNumber),
           ex);
     } catch (IllegalResilientWebSocketStateException ex) {
       throw new IllegalLimeTraderClientStateException("Lime trader client is closed.", ex);
@@ -1300,8 +1320,9 @@ public class LimeTraderClient implements AutoCloseable {
           String.format(ACCOUNT_POSITIONS_CHANGED_EVENT_STATE_PROPERTY_PATTERN, accountNumber),
           jsonMapper.writeValueAsString(unsubscribeAction));
     } catch (StateChangeFailedException | JsonProcessingException ex) {
-      throw new UnexpectedFailureException(String.format(
-          "Unsubscription from account '%s' positions changed events failed.", accountNumber),
+      throw new UnexpectedFailureException(
+          String.format(
+              "Unsubscription from account '%s' positions changed events failed.", accountNumber),
           ex);
     } catch (IllegalResilientWebSocketStateException ex) {
       throw new IllegalLimeTraderClientStateException("Lime trader client is closed.", ex);
@@ -1318,8 +1339,9 @@ public class LimeTraderClient implements AutoCloseable {
           String.format(ACCOUNT_ORDER_CHANGED_EVENT_STATE_PROPERTY_PATTERN, accountNumber),
           jsonMapper.writeValueAsString(subscribeAction));
     } catch (StateChangeFailedException | JsonProcessingException ex) {
-      throw new UnexpectedFailureException(String.format(
-          "Subscription for account '%s' order changed events failed.", accountNumber),
+      throw new UnexpectedFailureException(
+          String.format(
+              "Subscription for account '%s' order changed events failed.", accountNumber),
           ex);
     } catch (IllegalResilientWebSocketStateException ex) {
       throw new IllegalLimeTraderClientStateException("Lime trader client is closed.", ex);
@@ -1331,14 +1353,14 @@ public class LimeTraderClient implements AutoCloseable {
     verifyNotClosed();
     try {
       AccountSubscriptionAction unsubscribeAction =
-          accountSubscriptionActionFactory.getAccountOrderChangedEventAction(
-              accountNumber, false);
+          accountSubscriptionActionFactory.getAccountOrderChangedEventAction(accountNumber, false);
       accountWebSocket.removeFromStateWith(
           String.format(ACCOUNT_ORDER_CHANGED_EVENT_STATE_PROPERTY_PATTERN, accountNumber),
           jsonMapper.writeValueAsString(unsubscribeAction));
     } catch (StateChangeFailedException | JsonProcessingException ex) {
-      throw new UnexpectedFailureException(String.format(
-          "Unsubscription from account '%s' order changed events failed.", accountNumber),
+      throw new UnexpectedFailureException(
+          String.format(
+              "Unsubscription from account '%s' order changed events failed.", accountNumber),
           ex);
     } catch (IllegalResilientWebSocketStateException ex) {
       throw new IllegalLimeTraderClientStateException("Lime trader client is closed.", ex);
@@ -1355,8 +1377,9 @@ public class LimeTraderClient implements AutoCloseable {
           String.format(ACCOUNT_TRADE_CHANGED_EVENT_STATE_PROPERTY_PATTERN, accountNumber),
           jsonMapper.writeValueAsString(subscribeAction));
     } catch (StateChangeFailedException | JsonProcessingException ex) {
-      throw new UnexpectedFailureException(String.format(
-          "Subscription for account '%s' trade changed events failed.", accountNumber),
+      throw new UnexpectedFailureException(
+          String.format(
+              "Subscription for account '%s' trade changed events failed.", accountNumber),
           ex);
     } catch (IllegalResilientWebSocketStateException ex) {
       throw new IllegalLimeTraderClientStateException("Lime trader client is closed.", ex);
@@ -1368,14 +1391,14 @@ public class LimeTraderClient implements AutoCloseable {
     verifyNotClosed();
     try {
       AccountSubscriptionAction unsubscribeAction =
-          accountSubscriptionActionFactory.getAccountTradeChangedEventAction(
-              accountNumber, false);
+          accountSubscriptionActionFactory.getAccountTradeChangedEventAction(accountNumber, false);
       accountWebSocket.removeFromStateWith(
           String.format(ACCOUNT_TRADE_CHANGED_EVENT_STATE_PROPERTY_PATTERN, accountNumber),
           jsonMapper.writeValueAsString(unsubscribeAction));
     } catch (StateChangeFailedException | JsonProcessingException ex) {
-      throw new UnexpectedFailureException(String.format(
-          "Unsubscription from account '%s' trade changed events failed.", accountNumber),
+      throw new UnexpectedFailureException(
+          String.format(
+              "Unsubscription from account '%s' trade changed events failed.", accountNumber),
           ex);
     } catch (IllegalResilientWebSocketStateException ex) {
       throw new IllegalLimeTraderClientStateException("Lime trader client is closed.", ex);
@@ -1396,23 +1419,23 @@ public class LimeTraderClient implements AutoCloseable {
           jsonMapper.writeValueAsString(subscribeAction),
           oldData -> buildDataForStateTransitionDuringMarketDataSubscription(oldData, symbols));
     } catch (StateChangeFailedException | JsonProcessingException ex) {
-      throw new UnexpectedFailureException(String.format(
-          "Subscription for market data for '%s' symbols failed.",
-          String.join(",", symbols)),
+      throw new UnexpectedFailureException(
+          String.format(
+              "Subscription for market data for '%s' symbols failed.", String.join(",", symbols)),
           ex);
     } catch (IllegalResilientWebSocketStateException ex) {
       throw new IllegalLimeTraderClientStateException("Lime trader client is closed.", ex);
     }
   }
 
-  private String buildDataForStateTransitionDuringMarketDataSubscription(String oldData,
-      Set<String> newSymbols) {
+  private String buildDataForStateTransitionDuringMarketDataSubscription(
+      String oldData, Set<String> newSymbols) {
     if (oldData == null) {
       return null;
     }
     try {
-      Set<String> oldSymbols = jsonMapper.readValue(oldData, MarketDataSubscriptionAction.class)
-          .symbols();
+      Set<String> oldSymbols =
+          jsonMapper.readValue(oldData, MarketDataSubscriptionAction.class).symbols();
       Set<String> symbolsToUnsubscribe = new HashSet<>(oldSymbols);
       symbolsToUnsubscribe.removeAll(newSymbols);
       if (symbolsToUnsubscribe.isEmpty()) {
@@ -1425,7 +1448,8 @@ public class LimeTraderClient implements AutoCloseable {
       throw new UnexpectedFailureException(String.format(
           "If you see this message then possibly there is a bug in the lime trader client during "
               + "market data subscription. Please contact dev team. Details are: old data '%s', "
-              + "new symbols '%s'.", oldData, String.join(",", newSymbols)));
+              + "new symbols '%s'.",
+          oldData, String.join(",", newSymbols)));
     }
   }
 
@@ -1449,8 +1473,7 @@ public class LimeTraderClient implements AutoCloseable {
     }
     try {
       Set<String> symbolsToUnsubscribe =
-          jsonMapper.readValue(oldData, MarketDataSubscriptionAction.class)
-              .symbols();
+          jsonMapper.readValue(oldData, MarketDataSubscriptionAction.class).symbols();
       MarketDataSubscriptionAction unsubscribeAction =
           marketDataSubscriptionActionFactory.getAction(symbolsToUnsubscribe, false);
       return jsonMapper.writeValueAsString(unsubscribeAction);

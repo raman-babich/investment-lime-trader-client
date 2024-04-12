@@ -36,6 +36,4 @@ public record AccountBalance(
     BigDecimal nonMarginBuyingPower,
     BigDecimal positionMarketValue,
     BigDecimal unsettledCash,
-    BigDecimal cashToWithdraw) {
-
-}
+    BigDecimal cashToWithdraw) {}

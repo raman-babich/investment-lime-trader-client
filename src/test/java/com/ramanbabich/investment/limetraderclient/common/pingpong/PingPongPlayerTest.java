@@ -35,12 +35,14 @@ class PingPongPlayerTest {
     Thread playerThread = new Thread(player);
     AtomicInteger roundNumber = new AtomicInteger();
     Mockito.doAnswer(invocation -> {
-      int round = roundNumber.incrementAndGet();
-      if (round < 3){
-        player.onPong();
-      }
-      return null;
-    }).when(pingSender).send();
+          int round = roundNumber.incrementAndGet();
+          if (round < 3) {
+            player.onPong();
+          }
+          return null;
+        })
+        .when(pingSender)
+        .send();
 
     playerThread.start();
 
@@ -58,5 +60,4 @@ class PingPongPlayerTest {
     playerThread.join();
     Mockito.verify(gameOverSubscriber).onGameOver(player);
   }
-
 }

@@ -63,67 +63,75 @@ public class AccountTextSubscriber implements TextSubscriber {
     try {
       doOnText(text);
     } catch (IllegalArgumentException | JsonProcessingException ex) {
-      throw new DataProcessingFailedException(String.format(
-          "Error occurred during processing '%s' text.", text),
-          ex);
+      throw new DataProcessingFailedException(
+          String.format("Error occurred during processing '%s' text.", text), ex);
     }
   }
 
   private void doOnText(String text) throws JsonProcessingException {
-    Map<String, Object> parsedData = jsonMapper.readValue(text,
-        TypeFactory.defaultInstance()
-            .constructMapType(Map.class, String.class, Object.class));
+    Map<String, Object> parsedData = jsonMapper.readValue(
+        text,
+        TypeFactory.defaultInstance().constructMapType(Map.class, String.class, Object.class));
     Object possibleDataType = parsedData.get(DATA_TYPE_PROPERTY);
     if (!(possibleDataType instanceof String dataType)) {
-      LOG.warn("The data '{}' with unrecognizable type has arrived. "
-          + "The data will be skipped.", text);
+      LOG.warn(
+          "The data '{}' with unrecognizable type has arrived. " + "The data will be skipped.",
+          text);
       return;
     }
     if (BALANCE_CHANGED_DATA_TYPE.equals(dataType)) {
       List<AccountBalanceChangedEvent> events = jsonMapper.convertValue(
-          parsedData.get(DATA_PROPERTY), TypeFactory.defaultInstance()
+          parsedData.get(DATA_PROPERTY),
+          TypeFactory.defaultInstance()
               .constructCollectionType(List.class, AccountBalanceChangedEvent.class));
       AccountBalanceChangedEventSubscriber threadSafeSubscriber = balanceChangedEventSubscriber;
       if (threadSafeSubscriber != null) {
         events.forEach(threadSafeSubscriber::onEvent);
       } else {
-        LOG.warn("Balance changed event subscriber is not set but events '{}' "
+        LOG.warn(
+            "Balance changed event subscriber is not set but events '{}' "
                 + "have arrived. Events will be skipped.",
             text);
       }
     } else if (POSITIONS_CHANGED_DATA_TYPE.equals(dataType)) {
       List<AccountPositionsChangedEvent> events = jsonMapper.convertValue(
-          parsedData.get(DATA_PROPERTY), TypeFactory.defaultInstance()
+          parsedData.get(DATA_PROPERTY),
+          TypeFactory.defaultInstance()
               .constructCollectionType(List.class, AccountPositionsChangedEvent.class));
       AccountPositionsChangedEventSubscriber threadSafeSubscriber = positionsChangedEventSubscriber;
       if (threadSafeSubscriber != null) {
         events.forEach(threadSafeSubscriber::onEvent);
       } else {
-        LOG.warn("Positions changed event subscriber is not set but events '{}' "
+        LOG.warn(
+            "Positions changed event subscriber is not set but events '{}' "
                 + "have arrived. Events will be skipped.",
             text);
       }
     } else if (ORDER_CHANGED_DATA_TYPE.equals(dataType)) {
       List<AccountOrderChangedEvent> events = jsonMapper.convertValue(
-          parsedData.get(DATA_PROPERTY), TypeFactory.defaultInstance()
+          parsedData.get(DATA_PROPERTY),
+          TypeFactory.defaultInstance()
               .constructCollectionType(List.class, AccountOrderChangedEvent.class));
       AccountOrderChangedEventSubscriber threadSafeSubscriber = orderChangedEventSubscriber;
       if (threadSafeSubscriber != null) {
         events.forEach(threadSafeSubscriber::onEvent);
       } else {
-        LOG.warn("Order changed event subscriber is not set but events '{}' "
+        LOG.warn(
+            "Order changed event subscriber is not set but events '{}' "
                 + "have arrived. Events will be skipped.",
             text);
       }
     } else if (TRADE_CHANGED_DATA_TYPE.equals(dataType)) {
       List<AccountTradeChangedEvent> events = jsonMapper.convertValue(
-          parsedData.get(DATA_PROPERTY), TypeFactory.defaultInstance()
+          parsedData.get(DATA_PROPERTY),
+          TypeFactory.defaultInstance()
               .constructCollectionType(List.class, AccountTradeChangedEvent.class));
       AccountTradeChangedEventSubscriber threadSafeSubscriber = tradeChangedEventSubscriber;
       if (threadSafeSubscriber != null) {
         events.forEach(threadSafeSubscriber::onEvent);
       } else {
-        LOG.warn("Trade changed event subscriber is not set but events '{}' "
+        LOG.warn(
+            "Trade changed event subscriber is not set but events '{}' "
                 + "have arrived. Events will be skipped.",
             text);
       }
@@ -133,7 +141,8 @@ public class AccountTextSubscriber implements TextSubscriber {
       if (threadSafeSubscriber != null) {
         threadSafeSubscriber.onEvent(event);
       } else {
-        LOG.warn("Error event subscriber is not set but events '{}' "
+        LOG.warn(
+            "Error event subscriber is not set but events '{}' "
                 + "have arrived. Events will be skipped.",
             text);
       }
@@ -162,5 +171,4 @@ public class AccountTextSubscriber implements TextSubscriber {
   public void setSubscriber(AccountErrorEventSubscriber accountErrorEventSubscriber) {
     this.errorEventSubscriber = accountErrorEventSubscriber;
   }
-
 }

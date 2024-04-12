@@ -38,20 +38,20 @@ class AccountSubscriptionActionFactoryTest {
 
   @Test
   void shouldGetAccountBalanceChangedEventAction() {
-    AccountSubscriptionAction expected = new AccountSubscriptionAction(
-        SUBSCRIBE_ACCOUNT_BALANCE_ACTION, "accountNumber");
+    AccountSubscriptionAction expected =
+        new AccountSubscriptionAction(SUBSCRIBE_ACCOUNT_BALANCE_ACTION, "accountNumber");
     Assertions.assertEquals(
         expected, factory.getAccountBalanceChangedEventAction(expected.accountNumber(), true));
-    expected = new AccountSubscriptionAction(
-        UNSUBSCRIBE_ACCOUNT_BALANCE_ACTION, expected.accountNumber());
+    expected =
+        new AccountSubscriptionAction(UNSUBSCRIBE_ACCOUNT_BALANCE_ACTION, expected.accountNumber());
     Assertions.assertEquals(
         expected, factory.getAccountBalanceChangedEventAction(expected.accountNumber(), false));
   }
 
   @Test
   void shouldGetAccountPositionsChangedEventAction() {
-    AccountSubscriptionAction expected = new AccountSubscriptionAction(
-        SUBSCRIBE_ACCOUNT_POSITIONS_ACTION, "accountNumber");
+    AccountSubscriptionAction expected =
+        new AccountSubscriptionAction(SUBSCRIBE_ACCOUNT_POSITIONS_ACTION, "accountNumber");
     Assertions.assertEquals(
         expected, factory.getAccountPositionsChangedEventAction(expected.accountNumber(), true));
     expected = new AccountSubscriptionAction(
@@ -62,26 +62,25 @@ class AccountSubscriptionActionFactoryTest {
 
   @Test
   void shouldGetAccountOrderChangedEventAction() {
-    AccountSubscriptionAction expected = new AccountSubscriptionAction(
-        SUBSCRIBE_ACCOUNT_ORDER_ACTION, "accountNumber");
+    AccountSubscriptionAction expected =
+        new AccountSubscriptionAction(SUBSCRIBE_ACCOUNT_ORDER_ACTION, "accountNumber");
     Assertions.assertEquals(
         expected, factory.getAccountOrderChangedEventAction(expected.accountNumber(), true));
-    expected = new AccountSubscriptionAction(
-        UNSUBSCRIBE_ACCOUNT_ORDER_ACTION, expected.accountNumber());
+    expected =
+        new AccountSubscriptionAction(UNSUBSCRIBE_ACCOUNT_ORDER_ACTION, expected.accountNumber());
     Assertions.assertEquals(
         expected, factory.getAccountOrderChangedEventAction(expected.accountNumber(), false));
   }
 
   @Test
   void shouldGetAccountTradeChangedEventAction() {
-    AccountSubscriptionAction expected = new AccountSubscriptionAction(
-        SUBSCRIBE_ACCOUNT_TRADE_ACTION, "accountNumber");
+    AccountSubscriptionAction expected =
+        new AccountSubscriptionAction(SUBSCRIBE_ACCOUNT_TRADE_ACTION, "accountNumber");
     Assertions.assertEquals(
         expected, factory.getAccountTradeChangedEventAction(expected.accountNumber(), true));
-    expected = new AccountSubscriptionAction(
-        UNSUBSCRIBE_ACCOUNT_TRADE_ACTION, expected.accountNumber());
+    expected =
+        new AccountSubscriptionAction(UNSUBSCRIBE_ACCOUNT_TRADE_ACTION, expected.accountNumber());
     Assertions.assertEquals(
         expected, factory.getAccountTradeChangedEventAction(expected.accountNumber(), false));
   }
-
 }

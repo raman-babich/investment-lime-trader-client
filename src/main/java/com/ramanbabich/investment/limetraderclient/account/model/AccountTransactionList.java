@@ -23,9 +23,7 @@ import java.util.List;
 /**
  * @author Raman Babich
  */
-public record AccountTransactionList(
-    List<Transaction> transactions,
-    Integer count) {
+public record AccountTransactionList(List<Transaction> transactions, Integer count) {
 
   public record Transaction(
       String id,
@@ -38,25 +36,10 @@ public record AccountTransactionList(
       String status) {
 
     public record Asset(
-        String symbol,
-        String symbolDescription,
-        Integer quantity,
-        BigDecimal price) {
+        String symbol, String symbolDescription, Integer quantity, BigDecimal price) {}
 
-    }
+    public record Cash(BigDecimal grossAmount, BigDecimal netAmount) {}
 
-    public record Cash(
-        BigDecimal grossAmount,
-        BigDecimal netAmount) {
-
-    }
-
-    public record Fee(
-        String name,
-        BigDecimal amount) {
-
-    }
-
+    public record Fee(String name, BigDecimal amount) {}
   }
-
 }
