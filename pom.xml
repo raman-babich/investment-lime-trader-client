@@ -320,6 +320,10 @@ limitations under the License.]]></inlineHeader>
               <pattern>META-INF/versions/19/com/fasterxml/jackson/core/io/doubleparser</pattern>
               <shadedPattern>META-INF/versions/19/com/ramanbabich/investment/limetraderclient/common/jackson/core/io/doubleparser</shadedPattern>
             </relocation>
+            <relocation>
+              <pattern>META-INF/versions/21/com/fasterxml/jackson/core/io/doubleparser</pattern>
+              <shadedPattern>META-INF/versions/21/com/ramanbabich/investment/limetraderclient/common/jackson/core/io/doubleparser</shadedPattern>
+            </relocation>
           </relocations>
         </configuration>
         <executions>
