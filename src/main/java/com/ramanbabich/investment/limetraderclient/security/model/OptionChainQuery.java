@@ -16,7 +16,9 @@
 
 package com.ramanbabich.investment.limetraderclient.security.model;
 
+import java.time.LocalDate;
+
 /**
  * @author Raman Babich
  */
-public record OptionExpirationQuery(String symbol, String series) {}
+public record OptionChainQuery(String symbol, LocalDate expiration, String series) {}

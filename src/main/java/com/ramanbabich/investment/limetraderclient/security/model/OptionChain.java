@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package com.ramanbabich.investment.limetraderclient.common.model;
+package com.ramanbabich.investment.limetraderclient.security.model;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author Raman Babich
  */
-public final class OrderExchange {
+public record OptionChain(Integer contractSize, String style, List<Element> chain) {
 
-  public static final String AUTO = "auto";
-
-  private OrderExchange() {}
+  public record Element(String symbol, String type, BigDecimal strike) {}
 }

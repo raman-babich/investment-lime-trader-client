@@ -71,9 +71,9 @@ import com.ramanbabich.investment.limetraderclient.order.model.OrderValidationIn
 import com.ramanbabich.investment.limetraderclient.order.model.OrderValidationResult;
 import com.ramanbabich.investment.limetraderclient.pricing.model.OrderFeeCharge;
 import com.ramanbabich.investment.limetraderclient.pricing.model.OrderFeeChargeQuery;
-import com.ramanbabich.investment.limetraderclient.security.model.Option;
-import com.ramanbabich.investment.limetraderclient.security.model.OptionExpirationQuery;
-import com.ramanbabich.investment.limetraderclient.security.model.OptionQuery;
+import com.ramanbabich.investment.limetraderclient.security.model.OptionChain;
+import com.ramanbabich.investment.limetraderclient.security.model.OptionChainQuery;
+import com.ramanbabich.investment.limetraderclient.security.model.OptionSeries;
 import com.ramanbabich.investment.limetraderclient.security.model.SecurityList;
 import com.ramanbabich.investment.limetraderclient.security.model.SecurityQuery;
 import java.io.IOException;
@@ -88,7 +88,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.InstantSource;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
@@ -161,7 +160,6 @@ public class LimeTraderClient implements AutoCloseable {
   private final String securitiesUrl;
   private final String optionsUrlPattern;
   private final String optionSeriesUrlPattern;
-  private final String optionExpirationUrlPattern;
 
   private final String baseWsApiUrl;
   private final String accountWsUrl;
@@ -198,7 +196,6 @@ public class LimeTraderClient implements AutoCloseable {
     this.securitiesUrl = this.baseHttpApiUrl + "/securities";
     this.optionsUrlPattern = this.securitiesUrl + "/%s/options";
     this.optionSeriesUrlPattern = this.optionsUrlPattern + "/series";
-    this.optionExpirationUrlPattern = this.optionsUrlPattern + "/expirations";
     this.baseWsApiUrl =
         Objects.requireNonNullElse(clientConfig.baseWsApiUrl(), DEFAULT_BASE_WS_API_URL);
     this.accountWsUrl = this.baseWsApiUrl + "/accounts";
@@ -373,9 +370,9 @@ public class LimeTraderClient implements AutoCloseable {
 
   private List<AccountPosition> doGetAccountPositions(AccountPositionQuery accountPositionQuery)
       throws IOException, InterruptedException {
-    Objects.requireNonNull(accountPositionQuery, "Account position query should be specified.");
+    Objects.requireNonNull(accountPositionQuery, "An account position query should be specified.");
     Objects.requireNonNull(
-        accountPositionQuery.accountNumber(), "Account number should be specified.");
+        accountPositionQuery.accountNumber(), "An account number should be specified.");
     verifyNotClosed();
     refreshAuthIfNeeded();
     Map<String, String> requestParams = new TreeMap<>();
@@ -424,10 +421,10 @@ public class LimeTraderClient implements AutoCloseable {
 
   private AccountTradeList doGetAccountTrades(AccountTradeQuery accountTradeQuery)
       throws IOException, InterruptedException {
-    Objects.requireNonNull(accountTradeQuery, "Account trade query should be specified.");
+    Objects.requireNonNull(accountTradeQuery, "An account trade query should be specified.");
     Objects.requireNonNull(
-        accountTradeQuery.accountNumber(), "Account number should be specified.");
-    Objects.requireNonNull(accountTradeQuery.date(), "Date should be specified.");
+        accountTradeQuery.accountNumber(), "An account number should be specified.");
+    Objects.requireNonNull(accountTradeQuery.date(), "A date should be specified.");
     verifyNotClosed();
     refreshAuthIfNeeded();
     Map<String, String> requestParams = new TreeMap<>();
@@ -480,7 +477,7 @@ public class LimeTraderClient implements AutoCloseable {
 
   private List<AccountActiveOrder> doGetAccountActiveOrders(String accountNumber)
       throws IOException, InterruptedException {
-    Objects.requireNonNull(accountNumber, "Account number should be specified.");
+    Objects.requireNonNull(accountNumber, "An account number should be specified.");
     verifyNotClosed();
     refreshAuthIfNeeded();
     URI uri = URI.create(String.format(
@@ -527,9 +524,9 @@ public class LimeTraderClient implements AutoCloseable {
   private AccountTransactionList doGetAccountTransactions(
       AccountTransactionQuery accountTransactionQuery) throws IOException, InterruptedException {
     Objects.requireNonNull(
-        accountTransactionQuery, "Account transaction query should be specified.");
+        accountTransactionQuery, "An account transaction query should be specified.");
     Objects.requireNonNull(
-        accountTransactionQuery.accountNumber(), "Account number should be specified.");
+        accountTransactionQuery.accountNumber(), "An account number should be specified.");
     verifyNotClosed();
     refreshAuthIfNeeded();
     Map<String, String> requestParams = new TreeMap<>();
@@ -612,18 +609,18 @@ public class LimeTraderClient implements AutoCloseable {
   }
 
   private void validateOrderPlacementInfo(OrderPlacementInfo orderPlacementInfo) {
-    Objects.requireNonNull(orderPlacementInfo, "Order placement info should be specified.");
+    Objects.requireNonNull(orderPlacementInfo, "An order placement info should be specified.");
     Objects.requireNonNull(
-        orderPlacementInfo.accountNumber(), "Account number should be specified.");
-    Objects.requireNonNull(orderPlacementInfo.symbol(), "Symbol should be specified.");
-    Objects.requireNonNull(orderPlacementInfo.quantity(), "Quantity should be specified.");
+        orderPlacementInfo.accountNumber(), "An account number should be specified.");
+    Objects.requireNonNull(orderPlacementInfo.symbol(), "A symbol should be specified.");
+    Objects.requireNonNull(orderPlacementInfo.quantity(), "A quantity should be specified.");
     String orderType = orderPlacementInfo.orderType();
     if (orderType != null) {
       if (orderType.equals(OrderType.LIMIT) || orderType.equals(OrderType.STOP_LIMIT)) {
-        Objects.requireNonNull(orderPlacementInfo.price(), "Price should be specified.");
+        Objects.requireNonNull(orderPlacementInfo.price(), "A price should be specified.");
       }
       if (orderType.equals(OrderType.STOP) || orderType.equals(OrderType.STOP_LIMIT)) {
-        Objects.requireNonNull(orderPlacementInfo.stopPrice(), "Stop price should be specified.");
+        Objects.requireNonNull(orderPlacementInfo.stopPrice(), "A stop price should be specified.");
       }
     }
   }
@@ -669,18 +666,19 @@ public class LimeTraderClient implements AutoCloseable {
   }
 
   private void validateOrderValidationInfo(OrderValidationInfo orderValidationInfo) {
-    Objects.requireNonNull(orderValidationInfo, "Order placement info should be specified.");
+    Objects.requireNonNull(orderValidationInfo, "An order placement info should be specified.");
     Objects.requireNonNull(
-        orderValidationInfo.accountNumber(), "Account number should be specified.");
-    Objects.requireNonNull(orderValidationInfo.symbol(), "Symbol should be specified.");
-    Objects.requireNonNull(orderValidationInfo.quantity(), "Quantity should be specified.");
+        orderValidationInfo.accountNumber(), "An account number should be specified.");
+    Objects.requireNonNull(orderValidationInfo.symbol(), "A symbol should be specified.");
+    Objects.requireNonNull(orderValidationInfo.quantity(), "A quantity should be specified.");
     String orderType = orderValidationInfo.orderType();
     if (orderType != null) {
       if (orderType.equals(OrderType.LIMIT) || orderType.equals(OrderType.STOP_LIMIT)) {
-        Objects.requireNonNull(orderValidationInfo.price(), "Price should be specified.");
+        Objects.requireNonNull(orderValidationInfo.price(), "A price should be specified.");
       }
       if (orderType.equals(OrderType.STOP) || orderType.equals(OrderType.STOP_LIMIT)) {
-        Objects.requireNonNull(orderValidationInfo.stopPrice(), "Stop price should be specified.");
+        Objects.requireNonNull(
+            orderValidationInfo.stopPrice(), "A stop price should be specified.");
       }
     }
   }
@@ -698,7 +696,7 @@ public class LimeTraderClient implements AutoCloseable {
   }
 
   private Order doGetOrder(String id) throws IOException, InterruptedException {
-    Objects.requireNonNull(id, "Id should be specified.");
+    Objects.requireNonNull(id, "An id should be specified.");
     verifyNotClosed();
     refreshAuthIfNeeded();
     URI uri =
@@ -744,8 +742,9 @@ public class LimeTraderClient implements AutoCloseable {
   private OrderCancellationResult doCancelOrder(
       String id, OrderCancellationInfo orderCancellationInfo)
       throws IOException, InterruptedException {
-    Objects.requireNonNull(orderCancellationInfo, "Order cancellation info should be specified.");
-    Objects.requireNonNull(id, "Id should be specified.");
+    Objects.requireNonNull(
+        orderCancellationInfo, "An order cancellation info should be specified.");
+    Objects.requireNonNull(id, "An id should be specified.");
     verifyNotClosed();
     refreshAuthIfNeeded();
     URI uri = URI.create(
@@ -818,12 +817,12 @@ public class LimeTraderClient implements AutoCloseable {
   }
 
   private void validateOrderFeeChargeQuery(OrderFeeChargeQuery orderFeeChargeQuery) {
-    Objects.requireNonNull(orderFeeChargeQuery, "Order fee charge query should be specified.");
+    Objects.requireNonNull(orderFeeChargeQuery, "An order fee charge query should be specified.");
     Objects.requireNonNull(
-        orderFeeChargeQuery.accountNumber(), "Account number should be specified.");
-    Objects.requireNonNull(orderFeeChargeQuery.symbol(), "Symbol should be specified.");
-    Objects.requireNonNull(orderFeeChargeQuery.quantity(), "Quantity should be specified.");
-    Objects.requireNonNull(orderFeeChargeQuery.side(), "Side should be specified.");
+        orderFeeChargeQuery.accountNumber(), "An account number should be specified.");
+    Objects.requireNonNull(orderFeeChargeQuery.symbol(), "A symbol should be specified.");
+    Objects.requireNonNull(orderFeeChargeQuery.quantity(), "A quantity should be specified.");
+    Objects.requireNonNull(orderFeeChargeQuery.side(), "A side should be specified.");
   }
 
   public Quote getQuote(String symbol) {
@@ -839,7 +838,7 @@ public class LimeTraderClient implements AutoCloseable {
   }
 
   private Quote doGetQuote(String symbol) throws IOException, InterruptedException {
-    Objects.requireNonNull(symbol, "Symbol should be specified.");
+    Objects.requireNonNull(symbol, "A symbol should be specified.");
     verifyNotClosed();
     refreshAuthIfNeeded();
     URI uri = buildUri(quoteUrl, Map.of("symbol", symbol));
@@ -883,7 +882,7 @@ public class LimeTraderClient implements AutoCloseable {
 
   private List<Quote> doGetQuotes(List<String> symbols) throws IOException, InterruptedException {
     for (String symbol : symbols) {
-      Objects.requireNonNull(symbol, "Symbol should be specified.");
+      Objects.requireNonNull(symbol, "A symbol should be specified.");
     }
     verifyNotClosed();
     refreshAuthIfNeeded();
@@ -958,11 +957,11 @@ public class LimeTraderClient implements AutoCloseable {
   }
 
   private void validateQuoteHistoryQuery(QuoteHistoryQuery quoteHistoryQuery) {
-    Objects.requireNonNull(quoteHistoryQuery, "Quote history query should be specified.");
-    Objects.requireNonNull(quoteHistoryQuery.symbol(), "Symbol should be specified.");
-    Objects.requireNonNull(quoteHistoryQuery.period(), "Period should be specified.");
-    Objects.requireNonNull(quoteHistoryQuery.from(), "From should be specified.");
-    Objects.requireNonNull(quoteHistoryQuery.to(), "To should be specified.");
+    Objects.requireNonNull(quoteHistoryQuery, "A quote history query should be specified.");
+    Objects.requireNonNull(quoteHistoryQuery.symbol(), "A symbol should be specified.");
+    Objects.requireNonNull(quoteHistoryQuery.period(), "A period should be specified.");
+    Objects.requireNonNull(quoteHistoryQuery.from(), "A from should be specified.");
+    Objects.requireNonNull(quoteHistoryQuery.to(), "A to should be specified.");
   }
 
   public TradingSchedule getTradingSchedule() {
@@ -1016,8 +1015,8 @@ public class LimeTraderClient implements AutoCloseable {
 
   private SecurityList doGetSecurities(SecurityQuery securityQuery)
       throws IOException, InterruptedException {
-    Objects.requireNonNull(securityQuery, "Security query should be specified.");
-    Objects.requireNonNull(securityQuery.query(), "Query should be specified.");
+    Objects.requireNonNull(securityQuery, "A security query should be specified.");
+    Objects.requireNonNull(securityQuery.query(), "A query should be specified.");
     verifyNotClosed();
     refreshAuthIfNeeded();
     Map<String, String> requestParams = new TreeMap<>();
@@ -1048,7 +1047,7 @@ public class LimeTraderClient implements AutoCloseable {
     }
   }
 
-  public List<String> getOptionSeries(String symbol) {
+  public List<OptionSeries> getOptionSeries(String symbol) {
     try {
       return doGetOptionSeries(symbol);
     } catch (IOException | InterruptedException ex) {
@@ -1061,8 +1060,9 @@ public class LimeTraderClient implements AutoCloseable {
     }
   }
 
-  private List<String> doGetOptionSeries(String symbol) throws IOException, InterruptedException {
-    Objects.requireNonNull(symbol, "Symbol should be specified.");
+  private List<OptionSeries> doGetOptionSeries(String symbol)
+      throws IOException, InterruptedException {
+    Objects.requireNonNull(symbol, "A symbol should be specified.");
     verifyNotClosed();
     refreshAuthIfNeeded();
     URI uri = URI.create(
@@ -1077,7 +1077,7 @@ public class LimeTraderClient implements AutoCloseable {
     if (response.statusCode() / 100 == 2) {
       return jsonMapper.readValue(
           response.body(),
-          TypeFactory.defaultInstance().constructCollectionType(List.class, String.class));
+          TypeFactory.defaultInstance().constructCollectionType(List.class, OptionSeries.class));
     } else if (response.statusCode() / 100 == 4) {
       throw new InvalidInputException(String.format(
           "Can't get option series for '%s' because of '%s' input error with status '%d'.",
@@ -1089,35 +1089,38 @@ public class LimeTraderClient implements AutoCloseable {
     }
   }
 
-  public List<LocalDate> getOptionExpirations(OptionExpirationQuery optionExpirationQuery) {
+  public OptionChain getOptionChain(OptionChainQuery optionChainQuery) {
     try {
-      return doGetOptionExpirations(optionExpirationQuery);
+      return doGetOptionChain(optionChainQuery);
     } catch (IOException | InterruptedException ex) {
       if (ex instanceof InterruptedException) {
         Thread.currentThread().interrupt();
       }
       throw new UnexpectedFailureException(
           String.format(
-              "Can't get option expirations for '%s' because of unexpected error.",
-              optionExpirationQuery),
+              "Can't get option chain for '%s' because of unexpected error.", optionChainQuery),
           ex);
     }
   }
 
-  private List<LocalDate> doGetOptionExpirations(OptionExpirationQuery optionExpirationQuery)
+  private OptionChain doGetOptionChain(OptionChainQuery optionChainQuery)
       throws IOException, InterruptedException {
-    Objects.requireNonNull(optionExpirationQuery, "Option expiration query should be specified.");
-    Objects.requireNonNull(optionExpirationQuery.symbol(), "Symbol should be specified.");
+    Objects.requireNonNull(optionChainQuery, "An option chain query should be specified.");
+    Objects.requireNonNull(optionChainQuery.symbol(), "A symbol should be specified.");
+    Objects.requireNonNull(optionChainQuery.expiration(), "An expiration should be specified.");
     verifyNotClosed();
     refreshAuthIfNeeded();
     Map<String, String> requestParams = new TreeMap<>();
-    if (optionExpirationQuery.series() != null) {
-      requestParams.put("series", optionExpirationQuery.series());
+    if (optionChainQuery.expiration() != null) {
+      requestParams.put("expiration", optionChainQuery.expiration().toString());
+    }
+    if (optionChainQuery.series() != null) {
+      requestParams.put("series", optionChainQuery.series());
     }
     URI uri = buildUri(
         String.format(
-            optionExpirationUrlPattern,
-            URLEncoder.encode(optionExpirationQuery.symbol(), StandardCharsets.UTF_8)),
+            optionsUrlPattern,
+            URLEncoder.encode(optionChainQuery.symbol(), StandardCharsets.UTF_8)),
         requestParams);
     HttpRequest request = HttpRequest.newBuilder()
         .uri(uri)
@@ -1127,70 +1130,15 @@ public class LimeTraderClient implements AutoCloseable {
         .build();
     HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
     if (response.statusCode() / 100 == 2) {
-      return jsonMapper.readValue(
-          response.body(),
-          TypeFactory.defaultInstance().constructCollectionType(List.class, LocalDate.class));
+      return jsonMapper.readValue(response.body(), OptionChain.class);
     } else if (response.statusCode() / 100 == 4) {
       throw new InvalidInputException(String.format(
-          "Can't get option expirations for '%s' because of '%s' input error with status '%d'.",
-          optionExpirationQuery, response.body(), response.statusCode()));
+          "Can't get option chain for '%s' because of '%s' input error with status '%d'.",
+          optionChainQuery, response.body(), response.statusCode()));
     } else {
       throw new UnexpectedFailureException(String.format(
-          "Can't get option expirations for '%s' because of '%s' error with status '%d'.",
-          optionExpirationQuery, response.body(), response.statusCode()));
-    }
-  }
-
-  public List<Option> getOptions(OptionQuery optionQuery) {
-    try {
-      return doGetOptions(optionQuery);
-    } catch (IOException | InterruptedException ex) {
-      if (ex instanceof InterruptedException) {
-        Thread.currentThread().interrupt();
-      }
-      throw new UnexpectedFailureException(
-          String.format("Can't get options for '%s' because of unexpected error.", optionQuery),
-          ex);
-    }
-  }
-
-  private List<Option> doGetOptions(OptionQuery optionQuery)
-      throws IOException, InterruptedException {
-    Objects.requireNonNull(optionQuery, "Option query should be specified.");
-    Objects.requireNonNull(optionQuery.symbol(), "Symbol should be specified.");
-    Objects.requireNonNull(optionQuery.expiration(), "Expiration should be specified.");
-    verifyNotClosed();
-    refreshAuthIfNeeded();
-    Map<String, String> requestParams = new TreeMap<>();
-    if (optionQuery.expiration() != null) {
-      requestParams.put("expiration", DateTimeFormatter.ISO_DATE.format(optionQuery.expiration()));
-    }
-    if (optionQuery.series() != null) {
-      requestParams.put("series", optionQuery.series());
-    }
-    URI uri = buildUri(
-        String.format(
-            optionsUrlPattern, URLEncoder.encode(optionQuery.symbol(), StandardCharsets.UTF_8)),
-        requestParams);
-    HttpRequest request = HttpRequest.newBuilder()
-        .uri(uri)
-        .header("accept", "application/json")
-        .header(AUTHORIZATION_HEADER, AUTHORIZATION_PREFIX + auth.accessToken())
-        .GET()
-        .build();
-    HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
-    if (response.statusCode() / 100 == 2) {
-      return jsonMapper.readValue(
-          response.body(),
-          TypeFactory.defaultInstance().constructCollectionType(List.class, Option.class));
-    } else if (response.statusCode() / 100 == 4) {
-      throw new InvalidInputException(String.format(
-          "Can't get options for '%s' because of '%s' input error with status '%d'.",
-          optionQuery, response.body(), response.statusCode()));
-    } else {
-      throw new UnexpectedFailureException(String.format(
-          "Can't get options for '%s' because of '%s' error with status '%d'.",
-          optionQuery, response.body(), response.statusCode()));
+          "Can't get option chain for '%s' because of '%s' error with status '%d'.",
+          optionChainQuery, response.body(), response.statusCode()));
     }
   }
 
@@ -1251,7 +1199,7 @@ public class LimeTraderClient implements AutoCloseable {
   }
 
   public void subscribeForAccountBalanceChangedEvents(String accountNumber) {
-    Objects.requireNonNull(accountNumber, "Account number should be specified.");
+    Objects.requireNonNull(accountNumber, "An account number should be specified.");
     verifyNotClosed();
     try {
       AccountSubscriptionAction subscribeAction =
@@ -1270,7 +1218,7 @@ public class LimeTraderClient implements AutoCloseable {
   }
 
   public void unsubscribeFromAccountBalanceChangedEvents(String accountNumber) {
-    Objects.requireNonNull(accountNumber, "Account number should be specified.");
+    Objects.requireNonNull(accountNumber, "An account number should be specified.");
     verifyNotClosed();
     try {
       AccountSubscriptionAction unsubscribeAction =
@@ -1290,7 +1238,7 @@ public class LimeTraderClient implements AutoCloseable {
   }
 
   public void subscribeForAccountPositionsChangedEvents(String accountNumber) {
-    Objects.requireNonNull(accountNumber, "Account number should be specified.");
+    Objects.requireNonNull(accountNumber, "An account number should be specified.");
     verifyNotClosed();
     try {
       AccountSubscriptionAction subscribeAction =
@@ -1310,7 +1258,7 @@ public class LimeTraderClient implements AutoCloseable {
   }
 
   public void unsubscribeFromAccountPositionsChangedEvents(String accountNumber) {
-    Objects.requireNonNull(accountNumber, "Account number should be specified.");
+    Objects.requireNonNull(accountNumber, "An account number should be specified.");
     verifyNotClosed();
     try {
       AccountSubscriptionAction unsubscribeAction =
@@ -1330,7 +1278,7 @@ public class LimeTraderClient implements AutoCloseable {
   }
 
   public void subscribeForAccountOrderChangedEvents(String accountNumber) {
-    Objects.requireNonNull(accountNumber, "Account number should be specified.");
+    Objects.requireNonNull(accountNumber, "An account number should be specified.");
     verifyNotClosed();
     try {
       AccountSubscriptionAction subscribeAction =
@@ -1349,7 +1297,7 @@ public class LimeTraderClient implements AutoCloseable {
   }
 
   public void unsubscribeFromAccountOrderChangedEvents(String accountNumber) {
-    Objects.requireNonNull(accountNumber, "Account number should be specified.");
+    Objects.requireNonNull(accountNumber, "An account number should be specified.");
     verifyNotClosed();
     try {
       AccountSubscriptionAction unsubscribeAction =
@@ -1368,7 +1316,7 @@ public class LimeTraderClient implements AutoCloseable {
   }
 
   public void subscribeForAccountTradeChangedEvents(String accountNumber) {
-    Objects.requireNonNull(accountNumber, "Account number should be specified.");
+    Objects.requireNonNull(accountNumber, "An account number should be specified.");
     verifyNotClosed();
     try {
       AccountSubscriptionAction subscribeAction =
@@ -1387,7 +1335,7 @@ public class LimeTraderClient implements AutoCloseable {
   }
 
   public void unsubscribeFromAccountTradeChangedEvents(String accountNumber) {
-    Objects.requireNonNull(accountNumber, "Account number should be specified.");
+    Objects.requireNonNull(accountNumber, "An account number should be specified.");
     verifyNotClosed();
     try {
       AccountSubscriptionAction unsubscribeAction =

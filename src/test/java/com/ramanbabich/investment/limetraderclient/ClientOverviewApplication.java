@@ -50,9 +50,9 @@ import com.ramanbabich.investment.limetraderclient.order.model.OrderValidationIn
 import com.ramanbabich.investment.limetraderclient.order.model.OrderValidationResult;
 import com.ramanbabich.investment.limetraderclient.pricing.model.OrderFeeCharge;
 import com.ramanbabich.investment.limetraderclient.pricing.model.OrderFeeChargeQuery;
-import com.ramanbabich.investment.limetraderclient.security.model.Option;
-import com.ramanbabich.investment.limetraderclient.security.model.OptionExpirationQuery;
-import com.ramanbabich.investment.limetraderclient.security.model.OptionQuery;
+import com.ramanbabich.investment.limetraderclient.security.model.OptionChain;
+import com.ramanbabich.investment.limetraderclient.security.model.OptionChainQuery;
+import com.ramanbabich.investment.limetraderclient.security.model.OptionSeries;
 import com.ramanbabich.investment.limetraderclient.security.model.SecurityList;
 import com.ramanbabich.investment.limetraderclient.security.model.SecurityQuery;
 import java.math.BigDecimal;
@@ -65,7 +65,7 @@ import java.util.Set;
 /**
  * @author Raman Babich
  */
-class ClientOverviewApplication {
+class ClientOverviewApplication implements AutoCloseable {
 
   private final LimeTraderClient client;
 
@@ -74,14 +74,14 @@ class ClientOverviewApplication {
   }
 
   public static void main(String[] args) throws Exception {
-    ClientOverviewApplication application = new ClientOverviewApplication(new Credentials(
-        "<your-client-id>", "<your-client-secret>", "<your-username>", "<your-password>"));
-    application.reviewAccountApi();
-    application.reviewOrderApi();
-    application.reviewPricingApi();
-    application.reviewSecurityApi();
-    application.reviewMarketDataApi();
-    application.close();
+    try (ClientOverviewApplication application = new ClientOverviewApplication(new Credentials(
+        "<your-client-id>", "<your-client-secret>", "<your-username>", "<your-password>"))) {
+      application.reviewAccountApi();
+      application.reviewOrderApi();
+      application.reviewPricingApi();
+      application.reviewSecurityApi();
+      application.reviewMarketDataApi();
+    }
   }
 
   private void reviewAccountApi() throws Exception {
@@ -179,14 +179,11 @@ class ClientOverviewApplication {
     System.out.println("-".repeat(100) + " SECURITY API");
     SecurityList securities = client.getSecurities(new SecurityQuery("AM", 5));
     System.out.println(securities);
-    List<String> optionSeries = client.getOptionSeries("AMD");
+    List<OptionSeries> optionSeries = client.getOptionSeries("AMD");
     optionSeries.forEach(System.out::println);
-    List<LocalDate> optionExpirations =
-        client.getOptionExpirations(new OptionExpirationQuery("AMD", optionSeries.get(0)));
-    optionExpirations.forEach(System.out::println);
-    List<Option> options =
-        client.getOptions(new OptionQuery("AMD", LocalDate.of(2025, 12, 19), optionSeries.get(0)));
-    options.forEach(System.out::println);
+    OptionChain optionChain = client.getOptionChain(
+        new OptionChainQuery("AMD", optionSeries.get(0).expirations().get(0), null));
+    System.out.println(optionChain);
   }
 
   private void reviewMarketDataApi() throws Exception {
@@ -209,7 +206,8 @@ class ClientOverviewApplication {
     client.unsubscribeFromMarketDataEvents();
   }
 
-  private void close() {
+  @Override
+  public void close() {
     client.close();
   }
 }

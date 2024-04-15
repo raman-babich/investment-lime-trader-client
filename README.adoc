@@ -1,4 +1,4 @@
-= Lime trader client [COMING SOON]
+= Lime trader client
 
 This is Java client for the https://lime.co/[lime.co] trader api. Official description of
 the api could be found https://docs.lime.co/trader/[here].
@@ -19,8 +19,8 @@ Add dependency of lime trader client, e.g. if you are using maven it will be som
 ----
 
 Create an instance of lime trader client specifying your credentials and just invoke methods you
-need. Don't forget to close client when you don't need it any longer to free up borrowed
-resources.
+need. Don't forget to close the client when you don't need it any longer or just use
+try-with-resources statement to free up borrowed resources.
 
 [source,java]
 ----
@@ -49,17 +49,14 @@ source code] first of all.
 
 [source,java]
 ----
-ClientOverviewApplication application = new ClientOverviewApplication(new Credentials(
-        "<your-client-id>",
-        "<your-client-secret>",
-        "<your-username>",
-        "<your-password>"));
-application.reviewAccountApi();
-//application.reviewOrderApi();
-application.reviewPricingApi();
-application.reviewSecurityApi();
-application.reviewMarketDataApi();
-application.close();
+try (ClientOverviewApplication application = new ClientOverviewApplication(new Credentials(
+    "<your-client-id>", "<your-client-secret>", "<your-username>", "<your-password>"))) {
+  application.reviewAccountApi();
+  application.reviewOrderApi();
+  application.reviewPricingApi();
+  application.reviewSecurityApi();
+  application.reviewMarketDataApi();
+}
 ----
 
 == Internals
