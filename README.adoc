@@ -52,7 +52,7 @@ source code] first of all.
 try (ClientOverviewApplication application = new ClientOverviewApplication(new Credentials(
     "<your-client-id>", "<your-client-secret>", "<your-username>", "<your-password>"))) {
   application.reviewAccountApi();
-  application.reviewOrderApi();
+  //application.reviewOrderApi();
   application.reviewPricingApi();
   application.reviewSecurityApi();
   application.reviewMarketDataApi();
