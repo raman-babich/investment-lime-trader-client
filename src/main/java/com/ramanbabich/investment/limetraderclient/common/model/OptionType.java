@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
-package com.ramanbabich.investment.limetraderclient.security.model;
-
-import java.time.LocalDate;
+package com.ramanbabich.investment.limetraderclient.common.model;
 
 /**
  * @author Raman Babich
  */
-public record OptionQuery(String symbol, LocalDate expiration, String series) {}
+public final class OptionType {
+
+  public static final String CALL = "call";
+  public static final String PUT = "put";
+
+  private OptionType() {}
+}

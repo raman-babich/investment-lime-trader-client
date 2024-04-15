@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package com.ramanbabich.investment.limetraderclient.common.model;
+package com.ramanbabich.investment.limetraderclient.security.model;
+
+import java.time.LocalDate;
+import java.util.List;
 
 /**
  * @author Raman Babich
  */
-public final class OrderExchange {
-
-  public static final String AUTO = "auto";
-
-  private OrderExchange() {}
-}
+public record OptionSeries(String series, List<LocalDate> expirations, Integer contractSize) {}

@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
-package com.ramanbabich.investment.limetraderclient.security.model;
-
-import java.math.BigDecimal;
+package com.ramanbabich.investment.limetraderclient.common.model;
 
 /**
  * @author Raman Babich
  */
-public record Option(String symbol, String type, BigDecimal strike) {}
+public final class OptionStyle {
+
+  public static final String AMERICAN = "american";
+  public static final String EUROPEAN = "european";
+
+  private OptionStyle() {}
+}

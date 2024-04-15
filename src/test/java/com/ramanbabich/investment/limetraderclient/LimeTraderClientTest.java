@@ -46,6 +46,8 @@ import com.ramanbabich.investment.limetraderclient.auth.model.Credentials;
 import com.ramanbabich.investment.limetraderclient.common.model.ClientConfig;
 import com.ramanbabich.investment.limetraderclient.common.model.IllegalLimeTraderClientStateException;
 import com.ramanbabich.investment.limetraderclient.common.model.NotFoundException;
+import com.ramanbabich.investment.limetraderclient.common.model.OptionStyle;
+import com.ramanbabich.investment.limetraderclient.common.model.OptionType;
 import com.ramanbabich.investment.limetraderclient.common.websocket.ResilientWebSocket;
 import com.ramanbabich.investment.limetraderclient.marketdata.MarketDataErrorEventSubscriber;
 import com.ramanbabich.investment.limetraderclient.marketdata.MarketDataSubscriptionActionFactory;
@@ -66,9 +68,10 @@ import com.ramanbabich.investment.limetraderclient.order.model.OrderValidationIn
 import com.ramanbabich.investment.limetraderclient.order.model.OrderValidationResult;
 import com.ramanbabich.investment.limetraderclient.pricing.model.OrderFeeCharge;
 import com.ramanbabich.investment.limetraderclient.pricing.model.OrderFeeChargeQuery;
-import com.ramanbabich.investment.limetraderclient.security.model.Option;
-import com.ramanbabich.investment.limetraderclient.security.model.OptionExpirationQuery;
-import com.ramanbabich.investment.limetraderclient.security.model.OptionQuery;
+import com.ramanbabich.investment.limetraderclient.security.model.OptionChain;
+import com.ramanbabich.investment.limetraderclient.security.model.OptionChain.Element;
+import com.ramanbabich.investment.limetraderclient.security.model.OptionChainQuery;
+import com.ramanbabich.investment.limetraderclient.security.model.OptionSeries;
 import com.ramanbabich.investment.limetraderclient.security.model.SecurityList;
 import com.ramanbabich.investment.limetraderclient.security.model.SecurityList.Security;
 import com.ramanbabich.investment.limetraderclient.security.model.SecurityQuery;
@@ -149,7 +152,6 @@ class LimeTraderClientTest {
   private String securitiesUrl;
   private String optionsUrlPattern;
   private String optionSeriesUrlPattern;
-  private String optionExpirationUrlPattern;
 
   private String baseWsApiUrl;
   private String accountWsUrl;
@@ -857,10 +859,11 @@ class LimeTraderClientTest {
     Mockito.when(response.statusCode()).thenReturn(200);
     String responseBody = "responseBody";
     Mockito.when(response.body()).thenReturn(responseBody);
-    List<String> expected = List.of("series");
+    List<OptionSeries> expected =
+        List.of(new OptionSeries("CZOO1", List.of(LocalDate.of(2023, 7, 21)), 5));
     Mockito.when(clientWithMocks.jsonMapper.readValue(
             responseBody,
-            TypeFactory.defaultInstance().constructCollectionType(List.class, String.class)))
+            TypeFactory.defaultInstance().constructCollectionType(List.class, OptionSeries.class)))
         .thenReturn(expected);
 
     Assertions.assertEquals(expected, clientWithMocks.client.getOptionSeries(symbol));
@@ -868,45 +871,12 @@ class LimeTraderClientTest {
 
   @Test
   @SuppressWarnings("unchecked")
-  void shouldGetOptionExpirations() throws Exception {
+  void shouldGetOptionChain() throws Exception {
     ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
     Authentication auth = mockSuccessfulAuth(clientWithMocks);
-    OptionExpirationQuery query = new OptionExpirationQuery("symbol", "series");
+    OptionChainQuery query = new OptionChainQuery("symbol", LocalDate.of(2042, 1, 1), "series");
     Map<String, String> requestParams = new TreeMap<>();
-    requestParams.put("series", query.series());
-    URI uri = buildUri(
-        String.format(
-            optionExpirationUrlPattern, URLEncoder.encode(query.symbol(), StandardCharsets.UTF_8)),
-        requestParams);
-    HttpRequest request = HttpRequest.newBuilder()
-        .uri(uri)
-        .header("accept", "application/json")
-        .header(AUTHORIZATION_HEADER, AUTHORIZATION_PREFIX + auth.accessToken())
-        .GET()
-        .build();
-    HttpResponse<String> response = (HttpResponse<String>) Mockito.mock(HttpResponse.class);
-    Mockito.when(clientWithMocks.httpClient.send(request, BodyHandlers.ofString()))
-        .thenReturn(response);
-    Mockito.when(response.statusCode()).thenReturn(200);
-    String responseBody = "responseBody";
-    Mockito.when(response.body()).thenReturn(responseBody);
-    List<LocalDate> expected = List.of(LocalDate.now());
-    Mockito.when(clientWithMocks.jsonMapper.readValue(
-            responseBody,
-            TypeFactory.defaultInstance().constructCollectionType(List.class, LocalDate.class)))
-        .thenReturn(expected);
-
-    Assertions.assertEquals(expected, clientWithMocks.client.getOptionExpirations(query));
-  }
-
-  @Test
-  @SuppressWarnings("unchecked")
-  void shouldGetOptions() throws Exception {
-    ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
-    Authentication auth = mockSuccessfulAuth(clientWithMocks);
-    OptionQuery query = new OptionQuery("symbol", LocalDate.now(), "series");
-    Map<String, String> requestParams = new TreeMap<>();
-    requestParams.put("expiration", DateTimeFormatter.ISO_DATE.format(query.expiration()));
+    requestParams.put("expiration", query.expiration().toString());
     requestParams.put("series", query.series());
     URI uri = buildUri(
         String.format(optionsUrlPattern, URLEncoder.encode(query.symbol(), StandardCharsets.UTF_8)),
@@ -923,13 +893,14 @@ class LimeTraderClientTest {
     Mockito.when(response.statusCode()).thenReturn(200);
     String responseBody = "responseBody";
     Mockito.when(response.body()).thenReturn(responseBody);
-    List<Option> expected = List.of(new Option("symbol", "type", BigDecimal.ONE));
-    Mockito.when(clientWithMocks.jsonMapper.readValue(
-            responseBody,
-            TypeFactory.defaultInstance().constructCollectionType(List.class, Option.class)))
+    OptionChain expected = new OptionChain(
+        1,
+        OptionStyle.EUROPEAN,
+        List.of(new Element(query.symbol(), OptionType.CALL, BigDecimal.ONE)));
+    Mockito.when(clientWithMocks.jsonMapper.readValue(responseBody, OptionChain.class))
         .thenReturn(expected);
 
-    Assertions.assertEquals(expected, clientWithMocks.client.getOptions(query));
+    Assertions.assertEquals(expected, clientWithMocks.client.getOptionChain(query));
   }
 
   @Test
@@ -1423,7 +1394,6 @@ class LimeTraderClientTest {
     this.securitiesUrl = this.baseHttpApiUrl + "/securities";
     this.optionsUrlPattern = this.securitiesUrl + "/%s/options";
     this.optionSeriesUrlPattern = this.optionsUrlPattern + "/series";
-    this.optionExpirationUrlPattern = this.optionsUrlPattern + "/expirations";
     this.baseWsApiUrl =
         Objects.requireNonNullElse(clientConfig.baseWsApiUrl(), DEFAULT_BASE_WS_API_URL);
     this.accountWsUrl = this.baseWsApiUrl + "/accounts";
