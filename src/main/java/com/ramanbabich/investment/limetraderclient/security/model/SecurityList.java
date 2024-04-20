@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * @author Raman Babich
  */
-public record SecurityList(List<Security> securities, Integer count) {
+public record SecurityList(List<Security> securities, Long count) {
 
   public record Security(String symbol, String description) {}
 }

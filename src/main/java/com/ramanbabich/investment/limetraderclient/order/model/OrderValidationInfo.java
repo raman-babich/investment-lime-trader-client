@@ -24,7 +24,7 @@ import java.math.BigDecimal;
 public record OrderValidationInfo(
     String accountNumber,
     String symbol,
-    Integer quantity,
+    Long quantity,
     BigDecimal price,
     BigDecimal stopPrice,
     String timeInForce,

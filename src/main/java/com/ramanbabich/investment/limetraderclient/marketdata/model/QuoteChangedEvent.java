@@ -27,12 +27,12 @@ import java.time.Instant;
 public record QuoteChangedEvent(
     @JsonProperty("s") String symbol,
     @JsonProperty("a") BigDecimal ask,
-    @JsonProperty("as") Integer askSize,
+    @JsonProperty("as") Long askSize,
     @JsonProperty("b") BigDecimal bid,
-    @JsonProperty("bs") Integer bidSize,
+    @JsonProperty("bs") Long bidSize,
     @JsonProperty("l") BigDecimal last,
-    @JsonProperty("ls") Integer lastSize,
-    @JsonProperty("v") Integer volume,
+    @JsonProperty("ls") Long lastSize,
+    @JsonProperty("v") Long volume,
     @JsonFormat(
             shape = JsonFormat.Shape.NUMBER,
             without = JsonFormat.Feature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS)

@@ -27,7 +27,7 @@ public record AccountOrderChangedEvent(
     String accountNumber,
     @JsonProperty("client_id") String orderId,
     String symbol,
-    Integer quantity,
+    Long quantity,
     BigDecimal price,
     BigDecimal stopPrice,
     String timeInForce,
@@ -35,7 +35,7 @@ public record AccountOrderChangedEvent(
     String orderSide,
     String exchange,
     String comment,
-    Integer executedQuantity,
+    Long executedQuantity,
     BigDecimal executedPrice,
     Instant executedTimestamp,
     String orderStatus) {}

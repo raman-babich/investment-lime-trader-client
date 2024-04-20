@@ -23,7 +23,7 @@ import java.math.BigDecimal;
  */
 public record AccountPosition(
     String symbol,
-    Integer quantity,
+    Long quantity,
     BigDecimal averageOpenPrice,
     BigDecimal currentPrice,
     String securityType) {}

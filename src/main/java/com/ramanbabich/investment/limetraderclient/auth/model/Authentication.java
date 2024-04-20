@@ -16,8 +16,13 @@
 
 package com.ramanbabich.investment.limetraderclient.auth.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author Raman Babich
  */
 public record Authentication(
-    String scope, String tokenType, String accessToken, Integer expiresIn) {}
+    String scope,
+    String tokenType,
+    String accessToken,
+    @JsonProperty("expires_in") Integer expiresInSeconds) {}

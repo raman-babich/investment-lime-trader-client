@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * @author Raman Babich
  */
-public record AccountTransactionList(List<Transaction> transactions, Integer count) {
+public record AccountTransactionList(List<Transaction> transactions, Long count) {
 
   public record Transaction(
       String id,
@@ -35,8 +35,7 @@ public record AccountTransactionList(List<Transaction> transactions, Integer cou
       List<Fee> fees,
       String status) {
 
-    public record Asset(
-        String symbol, String symbolDescription, Integer quantity, BigDecimal price) {}
+    public record Asset(String symbol, String symbolDescription, Long quantity, BigDecimal price) {}
 
     public record Cash(BigDecimal grossAmount, BigDecimal netAmount) {}
 

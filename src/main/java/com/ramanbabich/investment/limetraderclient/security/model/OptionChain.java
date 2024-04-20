@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * @author Raman Babich
  */
-public record OptionChain(Integer contractSize, String style, List<Element> chain) {
+public record OptionChain(Long contractSize, String style, List<Element> chain) {
 
   public record Element(String symbol, String type, BigDecimal strike) {}
 }

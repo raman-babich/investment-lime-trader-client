@@ -26,7 +26,7 @@ public record Order(
     @JsonProperty("client_id") String id,
     String accountNumber,
     String symbol,
-    Integer quantity,
+    Long quantity,
     BigDecimal price,
     BigDecimal stopPrice,
     String timeInForce,
@@ -34,6 +34,6 @@ public record Order(
     String orderSide,
     String exchange,
     String comment,
-    Integer executeQuantity,
+    Long executeQuantity,
     BigDecimal executedPrice,
     String orderStatus) {}
