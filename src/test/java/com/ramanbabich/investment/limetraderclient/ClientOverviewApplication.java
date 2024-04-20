@@ -128,7 +128,7 @@ class ClientOverviewApplication implements AutoCloseable {
     OrderPlacementInfo orderPlacementInfo = new OrderPlacementInfo(
         accountNumber,
         "AMD",
-        1,
+        1L,
         BigDecimal.ONE,
         null,
         OrderTimeInForce.DAY,
@@ -170,14 +170,14 @@ class ClientOverviewApplication implements AutoCloseable {
     System.out.println(accountBalances);
     String accountNumber = accountBalances.get(0).accountNumber();
     OrderFeeChargeQuery orderFeeChargeQuery =
-        new OrderFeeChargeQuery(accountNumber, "AMD", 1, OrderSide.BUY, BigDecimal.ONE);
+        new OrderFeeChargeQuery(accountNumber, "AMD", 1L, OrderSide.BUY, BigDecimal.ONE);
     List<OrderFeeCharge> orderFeeCharges = client.getOrderFeeCharges(orderFeeChargeQuery);
     System.out.println(orderFeeCharges);
   }
 
   private void reviewSecurityApi() {
     System.out.println("-".repeat(100) + " SECURITY API");
-    SecurityList securities = client.getSecurities(new SecurityQuery("AM", 5));
+    SecurityList securities = client.getSecurities(new SecurityQuery("AM", 5L));
     System.out.println(securities);
     List<OptionSeries> optionSeries = client.getOptionSeries("AMD");
     optionSeries.forEach(System.out::println);

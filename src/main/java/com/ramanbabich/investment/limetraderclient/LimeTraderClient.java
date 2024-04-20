@@ -274,7 +274,7 @@ public class LimeTraderClient implements AutoCloseable {
     HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
     if (response.statusCode() / 100 == 2) {
       auth = jsonMapper.readValue(response.body(), Authentication.class);
-      authRefreshTimestamp = now.plus((long) (auth.expiresIn() * 0.8), ChronoUnit.SECONDS);
+      authRefreshTimestamp = now.plus((long) (auth.expiresInSeconds() * 0.8), ChronoUnit.SECONDS);
     } else if (response.statusCode() / 100 == 4) {
       throw new InvalidCredentialsException(String.format(
           "Can't retrieve an authentication because of '%s' error.", response.body()));

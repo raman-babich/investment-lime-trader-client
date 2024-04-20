@@ -23,12 +23,12 @@ import java.util.List;
 /**
  * @author Raman Babich
  */
-public record AccountTradeList(List<Trade> trades, Integer count) {
+public record AccountTradeList(List<Trade> trades, Long count) {
 
   public record Trade(
       String symbol,
       Instant timestamp,
-      Integer quantity,
+      Long quantity,
       BigDecimal price,
       BigDecimal amount,
       String side) {}

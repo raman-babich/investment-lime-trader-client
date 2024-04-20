@@ -88,7 +88,7 @@ class AccountTextSubscriberTest {
         "marginType",
         "restriction",
         "restrictionReason",
-        1,
+        1L,
         BigDecimal.ONE,
         BigDecimal.ONE,
         1,
@@ -126,7 +126,7 @@ class AccountTextSubscriberTest {
   private static AccountPositionsChangedEvent buildAccountPositionsChangedEventSample() {
     return new AccountPositionsChangedEvent(
         "accountNumber",
-        List.of(new Position("symbol", 1, BigDecimal.ONE, BigDecimal.ONE, "securityType")));
+        List.of(new Position("symbol", 1L, BigDecimal.ONE, BigDecimal.ONE, "securityType")));
   }
 
   @Test
@@ -157,7 +157,7 @@ class AccountTextSubscriberTest {
         "accountNumber",
         "orderId",
         "symbol",
-        1,
+        1L,
         BigDecimal.ONE,
         BigDecimal.ONE,
         "timeInForce",
@@ -165,7 +165,7 @@ class AccountTextSubscriberTest {
         "orderSide",
         "exchange",
         "comment",
-        1,
+        1L,
         BigDecimal.ONE,
         Instant.ofEpochMilli(0),
         "orderStatus");
@@ -199,7 +199,7 @@ class AccountTextSubscriberTest {
         "accountNumber",
         "symbol",
         Instant.ofEpochMilli(0),
-        1,
+        1L,
         BigDecimal.ONE,
         BigDecimal.ONE,
         "side");

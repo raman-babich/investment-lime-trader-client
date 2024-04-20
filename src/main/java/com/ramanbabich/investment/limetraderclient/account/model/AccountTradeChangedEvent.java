@@ -26,7 +26,7 @@ public record AccountTradeChangedEvent(
     String accountNumber,
     String symbol,
     Instant timestamp,
-    Integer quantity,
+    Long quantity,
     BigDecimal price,
     BigDecimal amount,
     String side) {}

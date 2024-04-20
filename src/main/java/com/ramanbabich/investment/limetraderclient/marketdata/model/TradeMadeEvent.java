@@ -26,7 +26,7 @@ import java.time.Instant;
  */
 public record TradeMadeEvent(
     @JsonProperty("s") String symbol,
-    @JsonProperty("ls") Integer lastSize,
+    @JsonProperty("ls") Long lastSize,
     @JsonProperty("lm") String lastMarket,
     @JsonProperty("l") BigDecimal last,
     @JsonFormat(

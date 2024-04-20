@@ -22,4 +22,4 @@ import java.util.List;
 /**
  * @author Raman Babich
  */
-public record OptionSeries(String series, List<LocalDate> expirations, Integer contractSize) {}
+public record OptionSeries(String series, List<LocalDate> expirations, Long contractSize) {}

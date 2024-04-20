@@ -27,7 +27,7 @@ public record AccountBalance(
     String marginType,
     String restriction,
     String restrictionReason,
-    Integer daytradesCount,
+    Long daytradesCount,
     BigDecimal accountValueTotal,
     BigDecimal cash,
     Integer optionLevel,

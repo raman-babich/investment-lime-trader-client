@@ -27,7 +27,7 @@ public record AccountBalanceChangedEvent(
     String marginType,
     String restriction,
     String restrictionReason,
-    Integer daytradesCount,
+    Long daytradesCount,
     BigDecimal accountValueTotal,
     BigDecimal cash,
     Integer optionLevel,

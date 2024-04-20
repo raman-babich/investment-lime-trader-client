@@ -28,7 +28,7 @@ public record AccountPositionsChangedEvent(
 
   public record Position(
       String symbol,
-      Integer quantity,
+      Long quantity,
       BigDecimal averageOpenPrice,
       BigDecimal currentPrice,
       String securityType) {}

@@ -19,4 +19,4 @@ package com.ramanbabich.investment.limetraderclient.security.model;
 /**
  * @author Raman Babich
  */
-public record SecurityQuery(String query, Integer limit) {}
+public record SecurityQuery(String query, Long limit) {}

@@ -193,7 +193,7 @@ class LimeTraderClientTest {
         "marginType",
         "restriction",
         "restrictionReason",
-        1,
+        1L,
         BigDecimal.ONE,
         BigDecimal.ONE,
         1,
@@ -229,7 +229,7 @@ class LimeTraderClientTest {
 
     clientWithMocks.client.getAccountBalances();
     Mockito.when(clientWithMocks.instantSource.instant())
-        .thenReturn(DEFAULT_NOW.plus(auth.expiresIn() + 1, ChronoUnit.SECONDS));
+        .thenReturn(DEFAULT_NOW.plus(auth.expiresInSeconds() + 1, ChronoUnit.SECONDS));
     clientWithMocks.client.getAccountBalances();
 
     verifyAuthenticateTimes(2, clientWithMocks);
@@ -260,7 +260,7 @@ class LimeTraderClientTest {
     String responseBody = "responseBody";
     Mockito.when(response.body()).thenReturn(responseBody);
     List<AccountPosition> expected = List.of(
-        new AccountPosition("accountNumber", 1, BigDecimal.ONE, BigDecimal.ONE, "securityType"));
+        new AccountPosition("accountNumber", 1L, BigDecimal.ONE, BigDecimal.ONE, "securityType"));
     Mockito.when(clientWithMocks.jsonMapper.readValue(
             responseBody,
             TypeFactory.defaultInstance()
@@ -275,7 +275,7 @@ class LimeTraderClientTest {
   void shouldGetAccountTrades() throws Exception {
     ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
     Authentication auth = mockSuccessfulAuth(clientWithMocks);
-    AccountTradeQuery query = new AccountTradeQuery("accountNumber", LocalDate.now(), 1, 0);
+    AccountTradeQuery query = new AccountTradeQuery("accountNumber", LocalDate.now(), 1L, 0L);
     Map<String, String> requestParams = new TreeMap<>();
     requestParams.put("limit", query.limit().toString());
     requestParams.put("skip", query.skip().toString());
@@ -299,8 +299,8 @@ class LimeTraderClientTest {
     Mockito.when(response.body()).thenReturn(responseBody);
     AccountTradeList expected = new AccountTradeList(
         List.of(new Trade(
-            "symbol", Instant.ofEpochMilli(0), 1, BigDecimal.ONE, BigDecimal.ONE, "side")),
-        1);
+            "symbol", Instant.ofEpochMilli(0), 1L, BigDecimal.ONE, BigDecimal.ONE, "side")),
+        1L);
     Mockito.when(clientWithMocks.jsonMapper.readValue(responseBody, AccountTradeList.class))
         .thenReturn(expected);
 
@@ -342,7 +342,7 @@ class LimeTraderClientTest {
         "id",
         "accountNumber",
         "symbol",
-        1,
+        1L,
         BigDecimal.ONE,
         BigDecimal.ONE,
         "timeInForce",
@@ -350,7 +350,7 @@ class LimeTraderClientTest {
         "orderSide",
         "exchange",
         "comment",
-        1,
+        1L,
         BigDecimal.ONE,
         "orderStatus");
   }
@@ -361,7 +361,7 @@ class LimeTraderClientTest {
     ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
     Authentication auth = mockSuccessfulAuth(clientWithMocks);
     AccountTransactionQuery query = new AccountTransactionQuery(
-        "accountNumber", LocalDate.now().minus(Period.ofDays(1)), LocalDate.now(), 1, 0);
+        "accountNumber", LocalDate.now().minus(Period.ofDays(1)), LocalDate.now(), 1L, 0L);
     Map<String, String> requestParams = new TreeMap<>();
     requestParams.put("start_date", DateTimeFormatter.ISO_DATE.format(query.startDate()));
     requestParams.put("end_date", DateTimeFormatter.ISO_DATE.format(query.endDate()));
@@ -384,7 +384,7 @@ class LimeTraderClientTest {
     String responseBody = "responseBody";
     Mockito.when(response.body()).thenReturn(responseBody);
     AccountTransactionList expected =
-        new AccountTransactionList(List.of(buildAccountTransactionSample()), 1);
+        new AccountTransactionList(List.of(buildAccountTransactionSample()), 1L);
     Mockito.when(clientWithMocks.jsonMapper.readValue(responseBody, AccountTransactionList.class))
         .thenReturn(expected);
 
@@ -397,7 +397,7 @@ class LimeTraderClientTest {
         "type",
         "description",
         LocalDate.now(),
-        new Asset("symbol", "symbolDescription", 1, BigDecimal.ONE),
+        new Asset("symbol", "symbolDescription", 1L, BigDecimal.ONE),
         new Cash(BigDecimal.ONE, BigDecimal.ONE),
         List.of(new Fee("name", BigDecimal.ONE)),
         "status");
@@ -411,7 +411,7 @@ class LimeTraderClientTest {
     OrderPlacementInfo info = new OrderPlacementInfo(
         "accountNumber",
         "symbol",
-        1,
+        1L,
         BigDecimal.ONE,
         BigDecimal.ONE,
         "timeInForce",
@@ -449,7 +449,7 @@ class LimeTraderClientTest {
     OrderValidationInfo info = new OrderValidationInfo(
         "accountNumber",
         "symbol",
-        1,
+        1L,
         BigDecimal.ONE,
         BigDecimal.ONE,
         "timeInForce",
@@ -511,7 +511,7 @@ class LimeTraderClientTest {
         "id",
         "accountNumber",
         "symbol",
-        1,
+        1L,
         BigDecimal.ONE,
         BigDecimal.ONE,
         "timeInForce",
@@ -519,7 +519,7 @@ class LimeTraderClientTest {
         "orderSide",
         "exchange",
         "comment",
-        1,
+        1L,
         BigDecimal.ONE,
         "orderStatus");
   }
@@ -611,7 +611,7 @@ class LimeTraderClientTest {
     ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
     Authentication auth = mockSuccessfulAuth(clientWithMocks);
     OrderFeeChargeQuery query =
-        new OrderFeeChargeQuery("accountNumber", "symbol", 1, "side", BigDecimal.ONE);
+        new OrderFeeChargeQuery("accountNumber", "symbol", 1L, "side", BigDecimal.ONE);
     String requestBody = "requestBody";
     Mockito.when(clientWithMocks.jsonMapper.writeValueAsString(query)).thenReturn(requestBody);
     HttpRequest request = HttpRequest.newBuilder()
@@ -667,12 +667,12 @@ class LimeTraderClientTest {
     return new Quote(
         "symbol",
         BigDecimal.ONE,
-        1,
+        1L,
         BigDecimal.ONE,
-        1,
+        1L,
         BigDecimal.ONE,
-        1,
-        1,
+        1L,
+        1L,
         Instant.ofEpochMilli(0),
         BigDecimal.ONE,
         BigDecimal.ONE,
@@ -777,7 +777,7 @@ class LimeTraderClientTest {
         BigDecimal.ONE,
         BigDecimal.ONE,
         BigDecimal.ONE,
-        1));
+        1L));
     Mockito.when(clientWithMocks.jsonMapper.readValue(
             responseBody,
             TypeFactory.defaultInstance().constructCollectionType(List.class, Candle.class)))
@@ -815,7 +815,7 @@ class LimeTraderClientTest {
   void shouldGetSecurities() throws Exception {
     ClientWithMocks clientWithMocks = buildClientWithMocksAndInitUrls();
     Authentication auth = mockSuccessfulAuth(clientWithMocks);
-    SecurityQuery query = new SecurityQuery("query", 1);
+    SecurityQuery query = new SecurityQuery("query", 1L);
     Map<String, String> requestParams = new TreeMap<>();
     requestParams.put("query", query.query());
     requestParams.put("limit", query.limit().toString());
@@ -832,7 +832,7 @@ class LimeTraderClientTest {
     Mockito.when(response.statusCode()).thenReturn(200);
     String responseBody = "responseBody";
     Mockito.when(response.body()).thenReturn(responseBody);
-    SecurityList expected = new SecurityList(List.of(new Security("symbol", "description")), 1);
+    SecurityList expected = new SecurityList(List.of(new Security("symbol", "description")), 1L);
     Mockito.when(clientWithMocks.jsonMapper.readValue(responseBody, SecurityList.class))
         .thenReturn(expected);
 
@@ -860,7 +860,7 @@ class LimeTraderClientTest {
     String responseBody = "responseBody";
     Mockito.when(response.body()).thenReturn(responseBody);
     List<OptionSeries> expected =
-        List.of(new OptionSeries("CZOO1", List.of(LocalDate.of(2023, 7, 21)), 5));
+        List.of(new OptionSeries("CZOO1", List.of(LocalDate.of(2023, 7, 21)), 5L));
     Mockito.when(clientWithMocks.jsonMapper.readValue(
             responseBody,
             TypeFactory.defaultInstance().constructCollectionType(List.class, OptionSeries.class)))
@@ -894,7 +894,7 @@ class LimeTraderClientTest {
     String responseBody = "responseBody";
     Mockito.when(response.body()).thenReturn(responseBody);
     OptionChain expected = new OptionChain(
-        1,
+        1L,
         OptionStyle.EUROPEAN,
         List.of(new Element(query.symbol(), OptionType.CALL, BigDecimal.ONE)));
     Mockito.when(clientWithMocks.jsonMapper.readValue(responseBody, OptionChain.class))

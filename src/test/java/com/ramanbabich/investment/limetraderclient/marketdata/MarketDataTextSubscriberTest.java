@@ -71,12 +71,12 @@ class MarketDataTextSubscriberTest {
     return new QuoteChangedEvent(
         "symbol",
         BigDecimal.ONE,
-        1,
+        1L,
         BigDecimal.ONE,
-        1,
+        1L,
         BigDecimal.ONE,
-        1,
-        1,
+        1L,
+        1L,
         Instant.ofEpochMilli(0),
         BigDecimal.ONE,
         BigDecimal.ONE,
@@ -111,7 +111,7 @@ class MarketDataTextSubscriberTest {
   }
 
   private static TradeMadeEvent buildTradeMadeEventSample() {
-    return new TradeMadeEvent("symbol", 1, "lastMarket", BigDecimal.ONE, Instant.ofEpochMilli(0));
+    return new TradeMadeEvent("symbol", 1L, "lastMarket", BigDecimal.ONE, Instant.ofEpochMilli(0));
   }
 
   @Test

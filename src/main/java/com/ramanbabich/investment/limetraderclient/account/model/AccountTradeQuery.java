@@ -21,5 +21,4 @@ import java.time.LocalDate;
 /**
  * @author Raman Babich
  */
-public record AccountTradeQuery(
-    String accountNumber, LocalDate date, Integer limit, Integer skip) {}
+public record AccountTradeQuery(String accountNumber, LocalDate date, Long limit, Long skip) {}
