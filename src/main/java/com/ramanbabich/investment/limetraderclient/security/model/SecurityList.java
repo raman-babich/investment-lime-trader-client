@@ -16,13 +16,12 @@
 
 package com.ramanbabich.investment.limetraderclient.security.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /**
  * @author Raman Babich
  */
-public record SecurityList(@JsonProperty("trades") List<Security> securities, Integer count) {
+public record SecurityList(List<Security> securities, Integer count) {
 
   public record Security(String symbol, String description) {}
 }
